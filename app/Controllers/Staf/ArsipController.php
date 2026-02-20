@@ -51,7 +51,14 @@ class ArsipController extends BaseController
     {
         if (!$this->validate([
             'nomor_surat' => 'required',
-            'file_scan'   => 'max_size[file_scan,10240]|ext_in[file_scan,pdf,jpg,jpeg,png,doc,docx,xls,xlsx,ppt,pptx,zip,rar]'
+            // Validasi Khusus PDF
+            'file_scan'   => [
+                'rules'  => 'max_size[file_scan,10240]|ext_in[file_scan,pdf]',
+                'errors' => [
+                    'max_size' => 'Ukuran file terlalu besar (Maks 10MB)',
+                    'ext_in'   => 'Wajib upload file format .PDF agar bisa divalidasi (TTE).'
+                ]
+            ]
         ])) {
             return redirect()->back()->withInput()->with('error', 'Cek inputan Anda. Nomor Surat wajib diisi.');
         }
@@ -192,7 +199,14 @@ class ArsipController extends BaseController
             'perihal' => $this->request->getPost('perihal'),
             'lokasi_penyimpanan' => $lokasi, // Lokasi update otomatis
             'keterangan' => $this->request->getPost('keterangan'),
-            'file_scan' => $namaFile
+            // Validasi Khusus PDF
+            'file_scan'   => [
+                'rules'  => 'max_size[file_scan,10240]|ext_in[file_scan,pdf]',
+                'errors' => [
+                    'max_size' => 'Ukuran file terlalu besar (Maks 10MB)',
+                    'ext_in'   => 'Wajib upload file format .PDF agar bisa divalidasi (TTE).'
+                ]
+            ]
         ]);
 
         return redirect()->to('/staf/arsip')->with('success', 'Data berhasil diperbarui!');
@@ -245,5 +259,19 @@ class ArsipController extends BaseController
         ];
         
         return view('staf/arsip/detail_view', $data);
+    }
+    // --- FITUR BARU: ACC / TTE SURAT ---
+    public function setujui($id)
+    {
+        // 1. Generate Token Acak (16 karakter aneh)
+        $token = bin2hex(random_bytes(16)); 
+
+        // 2. Simpan Token itu ke Database
+        $this->arsipModel->update($id, [
+            'status' => 'Disetujui',
+            'token_validasi' => $token
+        ]);
+
+        return redirect()->back()->with('success', 'Dokumen berhasil ditandatangani secara elektronik!');
     }
 }

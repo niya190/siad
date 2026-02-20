@@ -61,3 +61,8 @@ $routes->group('pimpinan', ['filter' => 'pimpinan'], static function ($routes) {
     $routes->get('arsip', 'Pimpinan\SuratMasukController::arsip'); 
     $routes->get('pdf/(:num)', 'Pimpinan\SuratMasukController::exportPDF/$1');// <-- Route Baru
 });
+// Rute untuk validasi QR (Bisa diakses publik tanpa login)
+$routes->get('validasi/cek/(:segment)', 'Validasi::cek/$1');
+
+// Rute untuk tombol setujui (Masuk dalam grup Staf)
+$routes->get('staf/arsip/setujui/(:num)', 'Staf\ArsipController::setujui/$1');

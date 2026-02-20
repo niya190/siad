@@ -13,7 +13,7 @@ class ArsipModel extends Model
         'tanggal_terima', 'jenis_arsip', 'nomor_surat', 
         'tanggal_surat', 'pengirim_tujuan', 'perihal', 
         'lokasi_penyimpanan', 'keterangan', 'file_scan', 
-        'id_petugas', 'created_at', 'updated_at'
+        'id_petugas', 'created_at', 'updated_at', 'status', 'token_validasi' // <--- TAMBAHKAN DUA INI
     ];
     protected $useTimestamps = true;
 

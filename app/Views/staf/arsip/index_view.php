@@ -35,17 +35,15 @@
 
     <div class="card-body table-responsive p-0">
         <table class="table table-bordered table-hover text-nowrap table-sm">
-            <thead class="bg-navy color-palette">
-                <tr class="text-center">
-                    <th style="width: 5%">No</th>
-                    <th>Tgl Terima</th>
-                    <th>No. Surat / Pengirim</th>
-                    <th>Perihal</th>
-                    <th class="bg-warning text-dark">LOKASI SIMPAN</th>
-                    <th style="width: 15%">File Arsip</th>
-                    <th style="width: 5%">Aksi</th>
-                </tr>
-            </thead>
+            <thead>
+    <tr>
+        <th>No.</th>
+        <th>Nomor Surat</th>
+        <th>Perihal</th>
+        <th>Posisi Terkini (Tracking)</th> <th>Lokasi Fisik</th>
+        <th>Aksi</th>
+    </tr>
+</thead>
        <tbody>
                 <?php if(empty($arsip)): ?>
                     <tr><td colspan="7" class="text-center p-3">Data arsip tidak ditemukan.</td></tr>
@@ -74,17 +72,41 @@
                         
                         <td style="white-space: normal;"><?= esc($row['perihal']) ?></td>
                         
-                        <td class="bg-warning text-center text-bold" style="vertical-align: middle;">
-                            <?= esc($row['lokasi_penyimpanan']) ?>
-                        </td>
+                       <td>
+    <?php if($row['status'] == 'Konsep'): ?>
+        <span class="badge badge-secondary"><i class="fas fa-edit"></i> Masih Konsep</span>
+    <?php elseif($row['status'] == 'Diajukan'): ?>
+        <span class="badge badge-warning"><i class="fas fa-spinner fa-spin"></i> Menunggu Pimpinan</span>
+    <?php elseif($row['status'] == 'Disetujui'): ?>
+        <span class="badge badge-success"><i class="fas fa-check-circle"></i> Selesai / Disetujui</span>
+    <?php else: ?>
+        <span class="badge badge-info"><i class="fas fa-paper-plane"></i> <?= $row['status'] ?></span>
+    <?php endif; ?>
+</td>
 
-                        <td class="text-center">
-                            <?php if($row['file_scan']): ?>
-                                <a href="<?= base_url('uploads/arsip/'.$row['file_scan']) ?>" target="_blank" class="btn btn-xs btn-default">
-                                    <i class="fas fa-paperclip"></i> Lihat
-                                </a>
-                            <?php else: ?> - <?php endif; ?>
-                        </td>
+<td>
+    <i class="fas fa-box text-muted"></i> <?= $row['lokasi_penyimpanan'] ?>
+</td>
+
+                       <td>
+    <a href="<?= base_url('staf/arsip/detail/'.$row['id_arsip']) ?>" class="btn btn-info btn-xs" title="Lihat Detail & Preview">
+        <i class="fas fa-eye"></i>
+    </a>
+
+    <a href="<?= base_url('uploads/arsip/'.$row['file_scan']) ?>" download class="btn btn-success btn-xs" title="Unduh File">
+        <i class="fas fa-download"></i>
+    </a>
+
+    <a href="<?= base_url('staf/arsip/edit/'.$row['id_arsip']) ?>" class="btn btn-warning btn-xs" title="Edit Data">
+        <i class="fas fa-edit"></i>
+    </a>
+
+    <form action="<?= base_url('staf/arsip/'.$row['id_arsip']) ?>" method="post" class="d-inline" onsubmit="return confirm('Yakin hapus data ini?')">
+        <?= csrf_field() ?>
+        <input type="hidden" name="_method" value="DELETE">
+        <button type="submit" class="btn btn-danger btn-xs" title="Hapus"><i class="fas fa-trash"></i></button>
+    </form>
+</td>
 
                         <td class="text-center" style="vertical-align: middle;">
                             <div class="btn-group-vertical">

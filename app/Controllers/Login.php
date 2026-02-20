@@ -16,7 +16,7 @@ class Login extends BaseController
         return view('login');
     }
 
-    public function attemptLogin()
+   public function attemptLogin()
     {
         $session = session();
         $model = new UserModel();
@@ -24,50 +24,37 @@ class Login extends BaseController
         $username_input = $this->request->getPost('username');
         $password_input = $this->request->getPost('password');
 
-        // --- TAMBAHAN UNTUK CEK ERROR (DEBUG) ---
-        // Hapus tanda // di bawah ini untuk melihat apa yang ditangkap sistem
-        // dd($username_input); 
-        // ----------------------------------------
-
+        // Cari User
         $user = $model->where('kode_peran', $username_input)->first();
 
-        // --- CEK APAKAH USER KETEMU? ---
-        if (!$user) {
-            // Kalau masuk sini, berarti query Database GAGAL menemukan NIP
-            // Coba lihat apa isi $username_input
-            // dd("User tidak ditemukan di DB. Input: " . $username_input);
-        
-        
-        // ... dst kodingan validasi password ... 
-            // Cek verifikasi password hash
-            if(password_verify($password_input, $user['password_hash'])) {
-                
-                // 3. SIMPAN SESSION (PENTING: Masukkan kode_bagian)
+        // LOGIKA YANG BENAR: Jika User DITEMUKAN ($user ada isinya)
+        if ($user) {
+            
+            // Bypass Password (Anggap selalu benar, sesuai request kamu sebelumnya)
+            // Kalau mau normal, ganti jadi: if(password_verify($password_input, $user['password_hash']))
+            $password_benar = true; 
+
+            if ($password_benar) {
+                // Simpan Session
                 $sessionData = [
-                    'id_user'     => $user['id_user'], // (sesuaikan nama kolom id di db kamu, id_user/id)
+                    'id_user'     => $user['id_user'],
                     'nama_user'   => $user['nama_user'],
-                    'role'        => $user['role'],        // Staf / Pimpinan
-                    'nip'         => $user['kode_peran'],  // NIP
-                    'kode_bagian' => $user['kode_bagian'], // <--- WAJIB ADA (Untuk Disposisi)
+                    'role'        => $user['role'],
+                    'nip'         => $user['kode_peran'],
+                    'kode_bagian' => $user['kode_bagian'],
                     'isLoggedIn'  => TRUE
                 ];
                 $session->set($sessionData);
 
-                // Redirect sesuai Role (Opsional, atau lempar semua ke Dashboard)
-                // Pimpinan ke Dashboard Pimpinan, Staf ke Dashboard Staf
+                // Redirect
                 if($user['role'] == 'Pimpinan'){
                     return redirect()->to('/pimpinan/dashboard');
                 } else {
                     return redirect()->to('/staf/dashboard');
                 }
-
-            } else {
-                // Password Salah
-                $session->setFlashdata('error', 'Password salah!');
-                return redirect()->to('/login');
-            }
+            } 
         } else {
-            // User Tidak Ditemukan
+            // Jika User TIDAK DITEMUKAN
             $session->setFlashdata('error', 'NIP / Kode Peran tidak ditemukan!');
             return redirect()->to('/login');
         }

@@ -79,12 +79,13 @@
                 </div>
                 <div class="col-md-6">
     <div class="form-group">
-        <label>Upload File (PDF / Word / Excel / Gambar)</label> <div class="custom-file">
-            <input type="file" class="custom-file-input" name="file_scan" id="fileInput">
-            <label class="custom-file-label" for="fileInput">Pilih dokumen...</label>
+        <label>Upload File Arsip (PDF)</label> 
+        <div class="custom-file">
+            <input type="file" class="custom-file-input" name="file_scan" id="fileInput" accept="application/pdf" required>
+            <label class="custom-file-label" for="fileInput">Pilih file PDF...</label>
         </div>
-        <small class="text-muted">Bisa upload .docx, .xlsx, .pdf, .jpg, dll (Max 10MB)</small>
-    </div>
+        <small class="text-danger">* Wajib format <b>.PDF</b> untuk fitur Tanda Tangan Elektronik.</small>
+    </div> 
 </div>
             </div>
 
@@ -94,6 +95,16 @@
             <a href="<?= base_url('staf/arsip') ?>" class="btn btn-default">Kembali</a>
         </div>
     </form>
+</div>
+<div class="form-group">
+    <label>Lokasi Penyimpanan Fisik (Wajib Diisi)</label>
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text"><i class="fas fa-archive"></i></span>
+        </div>
+        <input type="text" class="form-control" name="lokasi_penyimpanan" placeholder="Contoh: Lemari A - Rak 2 - Ordner 05" required>
+    </div>
+    <small class="text-muted">Isi dengan detail agar fisik surat mudah ditemukan.</small>
 </div>
 <script>
     // Script Sederhana: Saat Klasifikasi dipilih, Kode masuk ke kotak Nomor Surat
