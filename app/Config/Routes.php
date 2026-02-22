@@ -29,6 +29,9 @@ $routes->group('admin', ['filter' => 'admin'], static function ($routes) {
     $routes->get('divisi', 'Admin\DivisiController::index'); 
     $routes->get('jabatan', 'Admin\JabatanController::index');
     $routes->get('jenis-surat', 'Admin\JenisSuratController::index'); // Nota Dinas, Surat Perintah, dll
+    $routes->get('gedung', 'Admin\GedungController::index');
+    $routes->get('lemari', 'Admin\LemariController::index'); 
+    $routes->post('lemari/simpan', 'Admin\LemariController::simpan');
 });
 
 // Ganti bagian STAF yang lama dengan ini:
