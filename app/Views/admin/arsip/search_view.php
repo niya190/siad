@@ -74,12 +74,24 @@
         </button>
         <div class="flex items-center gap-3 pl-4 border-l border-slate-200 dark:border-slate-700">
             <div class="text-right hidden sm:block">
-                <p class="text-sm font-semibold text-slate-900 dark:text-white leading-none">Administrator</p>
+                <p class="text-sm font-semibold text-slate-900 dark:text-white leading-none"><?= esc(session()->get('nama_lengkap') ?? 'Administrator') ?></p>
                 <span class="inline-flex items-center gap-1 mt-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-primary/10 text-primary dark:text-blue-300 uppercase tracking-wide">
-                    Admin Role
+                    <?= esc(session()->get('role') ?? 'Admin Role') ?>
                 </span>
             </div>
-            <div class="size-9 rounded-full bg-slate-200 dark:bg-slate-700 bg-center bg-cover border-2 border-white dark:border-slate-600 shadow-sm cursor-pointer" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCntFHYm9aQxI9nbHCyyFKqtGy4gspqrYtEl-CzhPd5HNJuyxdEDtLLKaUAemZt91bE9KWYtTg0pYTF9gDk2X3YND_ZZK63HGuayaKRg0BesXtTDwIeiMcRgoowqL_ZbdwbDYFJibUggj7t6025M_PiNm7Z9HrF7pPWYnp7vhe3o_A9fNl-lpnPA9HSZZiKmQhbfWvR4mzV4KUpRxYErCON6Q62pK0Y6fpajgxEcg-5gAVgBuUa0IvMByqgi9kH99jdHG_5zzBBjHU');"></div>
+            
+            <?php 
+                $namaAdmin = session()->get('nama_lengkap') ?? 'Admin';
+                $partsAdmin = explode(' ', $namaAdmin);
+                $initialsAdmin = strtoupper(substr($partsAdmin[0], 0, 1) . (isset($partsAdmin[1]) ? substr($partsAdmin[1], 0, 1) : ''));
+            ?>
+            <div class="flex size-9 items-center justify-center rounded-full bg-slate-200 dark:bg-slate-700 border-2 border-white dark:border-slate-600 shadow-sm text-slate-600 dark:text-slate-300 font-bold text-xs">
+                <?= $initialsAdmin ?>
+            </div>
+
+            <a href="<?= base_url('login/logout') ?>" class="text-slate-400 hover:text-red-500 ml-1 transition-colors" title="Logout">
+                <span class="material-symbols-outlined text-2xl">logout</span>
+            </a>
         </div>
     </div>
 </header>

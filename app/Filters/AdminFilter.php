@@ -18,10 +18,9 @@ class AdminFilter implements FilterInterface
         }
 
         // 2. Cek apakah role-nya BUKAN admin
-        if ($session->get('role') !== 'admin') {
-            // Jika bukan admin, tendang dia kembali ke dashboard-nya sendiri
-            return redirect()->to('/dashboard')->with('error', 'Anda tidak memiliki hak akses ke halaman Admin.');
-        }
+       if (session()->get('role') != 'admin') {
+    return redirect()->to(base_url('staf/dashboard')); // Arahkan dengan benar ke staf
+}
     }
 
     public function after(RequestInterface $request, ResponseInterface $response, $arguments = null)

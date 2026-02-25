@@ -21,6 +21,7 @@ class AuthFilter implements FilterInterface
             return redirect()->to('/login')->with('error', 'Anda harus login terlebih dahulu!');
         }
         
+        
         // Jika sudah login, biarkan request berlanjut (return null)
         return;
     }

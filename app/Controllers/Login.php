@@ -25,7 +25,9 @@ class Login extends BaseController
         $password_input = $this->request->getPost('password');
 
         // Cari User
-        $user = $model->where('kode_peran', $username_input)->first();
+        $user = $model->where('username', $username_input)
+              ->orWhere('email', $username_input)
+              ->first();
 
         // LOGIKA YANG BENAR: Jika User DITEMUKAN ($user ada isinya)
         if ($user) {
@@ -34,25 +36,27 @@ class Login extends BaseController
             // Kalau mau normal, ganti jadi: if(password_verify($password_input, $user['password_hash']))
             $password_benar = true; 
 
-            if ($password_benar) {
-                // Simpan Session
-                $sessionData = [
-                    'id_user'     => $user['id_user'],
-                    'nama_user'   => $user['nama_user'],
-                    'role'        => $user['role'],
-                    'nip'         => $user['kode_peran'],
-                    'kode_bagian' => $user['kode_bagian'],
-                    'isLoggedIn'  => TRUE
-                ];
-                $session->set($sessionData);
-
-                // Redirect
-                if($user['role'] == 'Pimpinan'){
-                    return redirect()->to('/pimpinan/dashboard');
-                } else {
-                    return redirect()->to('/staf/dashboard');
-                }
-            } 
+   // Jika login berhasil
+if ($password_benar) {
+    $sessionData = [
+        'id_user'      => $user['id_user'],
+        'username'     => $user['username'],
+        'nama_lengkap' => $user['nama_lengkap'],
+        'role'         => $user['role'],
+        'divisi'       => $user['divisi'],
+        'isLoggedIn'   => TRUE
+    ];
+    $session->set($sessionData);
+    
+    // Redirect sesuai role (hanya Admin & Staff)
+    // Redirect sesuai role
+    if ($user['role'] == 'admin') {
+        return redirect()->to(base_url('admin/dashboard'));
+    } else {
+        // PASTIKAN TULISANNYA 'staf/dashboard', bukan cuma 'dashboard'
+        return redirect()->to(base_url('staf/dashboard')); 
+    }
+}
         } else {
             // Jika User TIDAK DITEMUKAN
             $session->setFlashdata('error', 'NIP / Kode Peran tidak ditemukan!');
@@ -62,8 +66,10 @@ class Login extends BaseController
 
     public function logout()
     {
-        $session = session();
-        $session->destroy();
-        return redirect()->to('/login')->with('success', 'Anda berhasil logout.');
+        // Menghapus semua data session (mengeluarkan user)
+        session()->destroy();
+        
+        // Mengarahkan kembali ke halaman login
+        return redirect()->to(base_url('login'))->with('success', 'Anda telah berhasil logout.');
     }
 }

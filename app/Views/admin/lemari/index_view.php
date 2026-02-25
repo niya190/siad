@@ -1,181 +1,338 @@
-<?= $this->extend('layouts/admin_tailwind') ?>
-<?= $this->section('content') ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Admin Archive Manager Console - Distrik Navigasi Tanjungpinang</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#0e4c92", 
+                        secondary: "#fbb03b", 
+                        "background-light": "#f8fafc",
+                        "background-dark": "#0f172a",
+                        "surface-light": "#ffffff",
+                        "surface-dark": "#1e293b",
+                        "sidebar-bg": "#ffffff",
+                        "sidebar-active": "#eff6ff",
+                    },
+                    fontFamily: {
+                        display: ["Public Sans", "sans-serif"],
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02)',
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased h-screen flex flex-col overflow-hidden">
 
-<div class="flex items-center justify-between mb-6">
-    <div class="flex items-center gap-2 text-[#0a2569]">
-        <span class="material-symbols-outlined">grid_view</span>
-        <h2 class="text-base font-bold uppercase tracking-tight">Status Infrastruktur Lemari</h2>
-    </div>
-</div>
-
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-    <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
-        <div class="flex justify-between items-start mb-4">
-            <span class="text-slate-500 text-sm font-medium">Total Lemari</span>
-            <span class="text-emerald-600 text-xs font-bold bg-emerald-50 px-2 py-0.5 rounded">Aktif</span>
-        </div>
-        <div class="flex flex-col">
-            <span class="text-2xl font-bold text-slate-900"><?= $total_lemari ?> Unit</span>
+<header class="h-16 bg-white dark:bg-surface-dark border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-6 z-20 shadow-sm flex-shrink-0">
+    <div class="flex items-center gap-4">
+        <div class="flex items-center gap-3">
+            <div class="size-10 rounded-lg bg-primary flex items-center justify-center text-white shrink-0 shadow-lg shadow-blue-900/20">
+                <span class="material-symbols-outlined text-2xl">anchor</span>
+            </div>
+            <div class="flex flex-col">
+                <h1 class="text-slate-900 dark:text-white text-sm font-bold leading-tight">Distrik Navigasi</h1>
+                <p class="text-slate-500 dark:text-slate-400 text-xs font-medium">Tanjungpinang - Kelas I</p>
+            </div>
         </div>
     </div>
-    <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
-        <div class="flex justify-between items-start mb-4">
-            <span class="text-slate-500 text-sm font-medium">Kapasitas Total</span>
-            <span class="text-slate-500 text-xs font-bold bg-slate-100 px-2 py-0.5 rounded">Stabil</span>
-        </div>
-        <div class="flex flex-col">
-            <span class="text-2xl font-bold text-slate-900"><?= number_format($total_kapasitas, 0, ',', '.') ?> Dokumen</span>
-        </div>
-    </div>
-    <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
-        <div class="flex justify-between items-start mb-4">
-            <span class="text-slate-500 text-sm font-medium">Slot Tersedia</span>
-            <span class="text-primary text-xs font-bold bg-blue-50 px-2 py-0.5 rounded">Kosong</span>
-        </div>
-        <div class="flex flex-col">
-            <span class="text-2xl font-bold text-slate-900"><?= number_format($slot_tersedia, 0, ',', '.') ?> Slot</span>
-        </div>
-    </div>
-    <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6 <?= ($lemari_kritis > 0) ? 'border-l-4 border-l-amber-500' : '' ?>">
-        <div class="flex justify-between items-start mb-4">
-            <span class="text-slate-500 text-sm font-medium">Peringatan Penuh</span>
-            <span class="<?= ($lemari_kritis > 0) ? 'text-amber-600 bg-amber-50' : 'text-slate-400 bg-slate-100' ?> text-xs font-bold px-2 py-0.5 rounded">Atensi</span>
-        </div>
-        <div class="flex flex-col">
-            <span class="text-2xl font-bold text-slate-900"><?= $lemari_kritis ?> Unit</span>
-            <span class="text-xs text-slate-400 mt-1 italic">Kapasitas > 90%</span>
-        </div>
-    </div>
-</div>
-
-<div class="space-y-4 mb-12">
-    <h3 class="text-lg font-bold text-slate-900">Daftar Inventori Lemari dan Rak</h3>
-    
-    <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
-        
-        <?php foreach($daftar_lemari as $l): ?>
+    <div class="flex items-center gap-4">
+        <div class="flex items-center gap-3 pl-4 border-l border-slate-200 dark:border-slate-700">
+            <div class="text-right hidden sm:block">
+                <p class="text-sm font-semibold text-slate-900 dark:text-white leading-none"><?= esc(session()->get('nama_lengkap') ?? 'Administrator') ?></p>
+                <span class="inline-flex items-center gap-1 mt-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-primary/10 text-primary dark:text-blue-300 uppercase tracking-wide">
+                    <?= esc(session()->get('role') ?? 'Admin Role') ?>
+                </span>
+            </div>
+            
             <?php 
-                $persen_total = $l['kapasitas_maksimal'] > 0 ? round(($l['jumlah_terisi'] / $l['kapasitas_maksimal']) * 100) : 0;
-                
-                $badge_bg = 'bg-emerald-500'; $badge_txt = 'Tersedia';
-                if($persen_total >= 90) { $badge_bg = 'bg-red-500'; $badge_txt = 'Kritis'; }
-                elseif($persen_total >= 75) { $badge_bg = 'bg-amber-500'; $badge_txt = 'Hampir Penuh'; }
-
-                // Simulasi isi per rak agar tampilan progress bar sesuai dengan jumlah terisi
-                $sisa_isi = $l['jumlah_terisi'];
-                $rak_data = [];
-                for($i=1; $i<=$l['jumlah_rak']; $i++) {
-                    $isi_rak_ini = min($sisa_isi, $l['kapasitas_per_rak']);
-                    $sisa_isi -= $isi_rak_ini;
-                    $persen_rak = ($isi_rak_ini / $l['kapasitas_per_rak']) * 100;
-                    
-                    $warna_rak = 'bg-primary';
-                    if($persen_rak >= 90) $warna_rak = 'bg-red-500';
-                    elseif($persen_rak >= 75) $warna_rak = 'bg-amber-500';
-
-                    $rak_data[] = [
-                        'nama' => 'Rak '.$i,
-                        'terisi' => $isi_rak_ini,
-                        'persen' => $persen_rak,
-                        'warna' => $warna_rak
-                    ];
-                }
+                $namaAdmin = session()->get('nama_lengkap') ?? 'Admin';
+                $partsAdmin = explode(' ', $namaAdmin);
+                $initialsAdmin = strtoupper(substr($partsAdmin[0], 0, 1) . (isset($partsAdmin[1]) ? substr($partsAdmin[1], 0, 1) : ''));
             ?>
+            <div class="flex size-9 items-center justify-center rounded-full bg-slate-200 dark:bg-slate-700 border-2 border-white dark:border-slate-600 shadow-sm text-slate-600 dark:text-slate-300 font-bold text-xs">
+                <?= $initialsAdmin ?>
+            </div>
 
-            <div class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm flex flex-col sm:flex-row">
-                <div class="w-full sm:w-48 bg-slate-100 relative">
-                    <div class="absolute inset-0 bg-cover bg-center opacity-80" style="background-image: url('https://images.unsplash.com/photo-1595062584313-4ce49efdfdb9?q=80&w=1000&auto=format&fit=crop');"></div>
-                    <div class="absolute top-3 left-3 px-2 py-1 <?= $badge_bg ?> text-white text-[10px] font-bold rounded uppercase tracking-wider"><?= $badge_txt ?></div>
+            <a href="<?= base_url('login/logout') ?>" class="text-slate-400 hover:text-red-500 ml-1 transition-colors" title="Logout">
+                <span class="material-symbols-outlined text-2xl">logout</span>
+            </a>
+        </div>
+    </div>
+</header>
+
+<div class="flex flex-1 overflow-hidden">
+    <aside class="w-64 bg-sidebar-bg dark:bg-surface-dark border-r border-slate-200 dark:border-slate-800 flex flex-col flex-shrink-0 z-10">
+        <div class="p-4 border-b border-slate-100 dark:border-slate-800/50">
+            <button class="w-full flex items-center justify-between px-3 py-2 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-primary/30 transition-colors group">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary text-xl">admin_panel_settings</span>
+                    <span class="text-sm font-medium text-slate-700 dark:text-slate-200">Admin View</span>
                 </div>
-                <div class="flex-1 p-6 flex flex-col gap-4">
-                    <div class="flex justify-between items-start">
+            </button>
+        </div>
+        <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-1">
+            <div class="px-3 mb-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">Main Menu</div>
+            <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-50 hover:text-primary transition-colors group" href="<?= base_url('admin/dashboard') ?>">
+                <span class="material-symbols-outlined group-hover:text-primary transition-colors">dashboard</span>
+                <span class="text-sm font-medium">Dashboard</span>
+            </a>
+            <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-50 hover:text-primary transition-colors group" href="<?= base_url('admin/arsip/search') ?>">
+                <span class="material-symbols-outlined group-hover:text-primary transition-colors">search</span>
+                <span class="text-sm font-medium">Search Archives</span>
+            </a>
+            <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-50 hover:text-primary transition-colors group" href="<?= base_url('admin/arsip/create') ?>">
+                <span class="material-symbols-outlined group-hover:text-primary transition-colors">input</span>
+                <span class="text-sm font-medium">Data Entry</span>
+            </a>
+            
+            <div class="mt-6 mb-2 px-3 text-xs font-semibold text-slate-400 uppercase tracking-wider">Administrative</div>
+            
+            <a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary text-white font-medium shadow-md shadow-primary/20 transition-all group" href="<?= base_url('admin/lemari') ?>">
+                <span class="material-symbols-outlined filled">folder_managed</span>
+                <span class="text-sm">Archive Manager</span>
+            </a>
+            
+            <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-50 hover:text-primary transition-colors group" href="<?= base_url('admin/user') ?>">
+                <span class="material-symbols-outlined group-hover:text-primary transition-colors">people</span>
+                <span class="text-sm font-medium">User Management</span>
+            </a>
+            
+            <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-50 hover:text-primary transition-colors group" href="<?= base_url('admin/settings') ?>">
+                <span class="material-symbols-outlined group-hover:text-primary transition-colors">settings_applications</span>
+                <span class="text-sm font-medium">System Settings</span>
+            </a>
+        </nav>
+        <div class="p-4 border-t border-slate-200 dark:border-slate-800">
+            <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="material-symbols-outlined text-primary dark:text-blue-400">cloud_sync</span>
+                    <span class="text-xs font-bold text-primary dark:text-blue-400">System Status</span>
+                </div>
+                <div class="w-full bg-blue-200 dark:bg-blue-800 rounded-full h-1.5 mb-1">
+                    <div class="bg-primary h-1.5 rounded-full" style="width: 98%"></div>
+                </div>
+                <p class="text-[10px] text-slate-500 dark:text-slate-400 text-right">Online (98%)</p>
+            </div>
+        </div>
+    </aside>
+
+    <main class="flex-1 flex flex-col overflow-hidden bg-slate-50/50 dark:bg-background-dark relative">
+        <div class="flex-1 overflow-y-auto p-6 lg:p-8 scroll-smooth">
+            <div class="max-w-7xl mx-auto space-y-6">
+                
+                <div class="flex justify-between items-end pb-2">
+                    <div>
+                        <nav class="flex text-sm text-slate-500 dark:text-slate-400 mb-1">
+                            <a class="hover:text-primary" href="<?= base_url('admin/dashboard') ?>">Admin</a>
+                            <span class="mx-2">/</span>
+                            <span class="text-slate-800 dark:text-white font-medium">Archive Structure</span>
+                        </nav>
+                        <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Archive Management Console</h2>
+                        <p class="text-slate-500 text-sm mt-1">Manage physical locations and logical categories for archive storage.</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="bg-white rounded-xl p-4 shadow-soft border border-slate-100 flex items-center gap-4">
+                        <div class="p-3 bg-blue-50 rounded-lg text-primary">
+                            <span class="material-symbols-outlined text-xl">meeting_room</span>
+                        </div>
                         <div>
-                            <h4 class="text-lg font-bold text-slate-900"><?= $l['nama_lemari'] ?></h4>
-                            <p class="text-slate-500 text-xs mt-1"><?= $l['lokasi_ruangan'] ?></p>
+                            <p class="text-xs text-slate-500 font-medium uppercase tracking-wide">Rooms</p>
+                            <h3 class="text-xl font-bold text-slate-900"><?= $total_rooms ?? 0 ?></h3>
                         </div>
                     </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="bg-slate-50 p-2 rounded-lg">
-                            <p class="text-[10px] uppercase text-slate-400 font-bold tracking-widest">Total Rak</p>
-                            <p class="text-sm font-bold text-slate-700"><?= $l['jumlah_rak'] ?> Rak</p>
+                    <div class="bg-white rounded-xl p-4 shadow-soft border border-slate-100 flex items-center gap-4">
+                        <div class="p-3 bg-indigo-50 rounded-lg text-indigo-600">
+                            <span class="material-symbols-outlined text-xl">shelves</span>
                         </div>
-                        <div class="bg-slate-50 p-2 rounded-lg">
-                            <p class="text-[10px] uppercase text-slate-400 font-bold tracking-widest">Kapasitas</p>
-                            <p class="text-sm font-bold text-slate-700"><?= $l['jumlah_terisi'] ?> / <?= $l['kapasitas_maksimal'] ?></p>
+                        <div>
+                            <p class="text-xs text-slate-500 font-medium uppercase tracking-wide">Cabinets</p>
+                            <h3 class="text-xl font-bold text-slate-900"><?= $total_cabinets ?? 0 ?></h3>
                         </div>
                     </div>
+                    <div class="bg-white rounded-xl p-4 shadow-soft border border-slate-100 flex items-center gap-4">
+                        <div class="p-3 bg-amber-50 rounded-lg text-amber-600">
+                            <span class="material-symbols-outlined text-xl">layers</span>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-500 font-medium uppercase tracking-wide">Total Shelves</p>
+                            <h3 class="text-xl font-bold text-slate-900"><?= $total_shelves ?? 0 ?></h3>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl p-4 shadow-soft border border-slate-100 flex items-center gap-4">
+                        <div class="p-3 bg-emerald-50 rounded-lg text-emerald-600">
+                            <span class="material-symbols-outlined text-xl">category</span>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-500 font-medium uppercase tracking-wide">Categories</p>
+                            <h3 class="text-xl font-bold text-slate-900"><?= $total_categories ?? 0 ?></h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     
-                    <div class="space-y-3">
-                        <?php foreach(array_slice($rak_data, 0, 3) as $rak): ?>
-                        <div class="flex flex-col gap-1.5">
-                            <div class="flex justify-between text-xs font-medium">
-                                <span class="text-slate-600"><?= $rak['nama'] ?></span>
-                                <span class="text-slate-900 font-bold"><?= $rak['terisi'] ?>/<?= $l['kapasitas_per_rak'] ?></span>
+                    <div class="lg:col-span-2 space-y-6">
+                        <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col h-full">
+                            <div class="p-5 border-b border-slate-200 bg-slate-50/50 flex justify-between items-center">
+                                <h3 class="font-bold text-slate-900 flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-slate-500">domain</span>
+                                    Physical Storage Structure
+                                </h3>
+                                <button class="px-3 py-1.5 text-xs font-medium bg-white border border-slate-200 rounded-md text-slate-700 shadow-sm hover:text-primary transition-colors flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-sm">add</span> Add Room
+                                </button>
                             </div>
-                            <div class="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
-                                <div class="h-full <?= $rak['warna'] ?> rounded-full" style="width: <?= $rak['persen'] ?>%;"></div>
+                            
+                            <div class="p-0 overflow-hidden">
+                                <?php if(empty($ruangan_tree)): ?>
+                                    <div class="p-6 text-center text-slate-500">Belum ada data Ruangan.</div>
+                                <?php else: ?>
+                                    <?php foreach($ruangan_tree as $room): ?>
+                                    <div class="border-b border-slate-100 last:border-0">
+                                        
+                                        <div class="p-4 bg-slate-50 flex items-center justify-between cursor-pointer hover:bg-slate-100 transition-colors group">
+                                            <div class="flex items-center gap-3">
+                                                <div class="p-2 bg-white rounded border border-slate-200 shadow-sm">
+                                                    <span class="material-symbols-outlined text-primary text-lg">meeting_room</span>
+                                                </div>
+                                                <div>
+                                                    <h4 class="text-sm font-bold text-slate-900"><?= esc($room['nama_ruangan']) ?></h4>
+                                                    <p class="text-xs text-slate-500"><?= count($room['cabinets']) ?> Cabinets Registered</p>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-center gap-3">
+                                                <button class="text-slate-400 hover:text-primary transition-colors" title="Add Cabinet">
+                                                    <span class="material-symbols-outlined">add_box</span>
+                                                </button>
+                                                <button class="text-slate-400 hover:text-primary transition-colors">
+                                                    <span class="material-symbols-outlined">expand_more</span>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <?php if(!empty($room['cabinets'])): ?>
+                                        <div class="bg-white px-4 py-2 border-t border-slate-100">
+                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 py-3">
+                                                <?php foreach($room['cabinets'] as $cabinet): ?>
+                                                <div class="border border-slate-200 rounded-lg p-3 hover:border-primary/50 transition-colors group/cab">
+                                                    <div class="flex justify-between items-start mb-2">
+                                                        <div class="flex items-center gap-2">
+                                                            <span class="material-symbols-outlined text-slate-400 text-lg">shelves</span>
+                                                            <span class="text-sm font-semibold text-slate-800"><?= esc($cabinet['nama_lemari']) ?></span>
+                                                        </div>
+                                                        <button class="text-slate-300 hover:text-primary opacity-0 group-hover/cab:opacity-100 transition-opacity">
+                                                            <span class="material-symbols-outlined text-sm">more_vert</span>
+                                                        </button>
+                                                    </div>
+                                                    
+                                                    <div class="space-y-1">
+                                                        <?php if(empty($cabinet['shelves'])): ?>
+                                                            <div class="text-xs text-slate-400 italic">Belum ada rak/box</div>
+                                                        <?php else: ?>
+                                                            <?php foreach($cabinet['shelves'] as $shelf): ?>
+                                                            <div class="flex items-center justify-between text-xs text-slate-500 mt-2">
+                                                                <span><?= esc($shelf['nama_rak']) ?></span>
+                                                                <span class="text-emerald-600 font-medium">Ready</span>
+                                                            </div>
+                                                            <div class="w-full bg-slate-100 rounded-full h-1.5">
+                                                                <div class="bg-emerald-500 h-1.5 rounded-full" style="width: 100%"></div>
+                                                            </div>
+                                                            <?php endforeach; ?>
+                                                        <?php endif; ?>
+                                                    </div>
+                                                </div>
+                                                <?php endforeach; ?>
+                                            </div>
+                                        </div>
+                                        <?php endif; ?>
+                                    </div>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
                             </div>
                         </div>
-                        <?php endforeach; ?>
-                        <?php if($l['jumlah_rak'] > 3): ?>
-                            <p class="text-[10px] text-slate-400 text-center italic">... dan <?= $l['jumlah_rak'] - 3 ?> rak lainnya</p>
-                        <?php endif; ?>
+                    </div>
+
+                    <div class="lg:col-span-1 space-y-6">
+                        <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                            <div class="p-5 border-b border-slate-200 bg-slate-50/50 flex justify-between items-center">
+                                <h3 class="font-bold text-slate-900 flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-slate-500">category</span>
+                                    Classifications
+                                </h3>
+                                <button class="p-1 rounded text-slate-400 hover:text-primary hover:bg-slate-100 transition-colors">
+                                    <span class="material-symbols-outlined">add</span>
+                                </button>
+                            </div>
+                            <div class="p-4">
+                                <div class="space-y-3">
+                                    
+                                    <?php if(!empty($klasifikasi)): ?>
+                                        <?php foreach($klasifikasi as $k): 
+                                            // Ambil 2 huruf depan (Misal: dari UM.002 ambil "UM")
+                                            $prefix = substr($k['kode_klasifikasi'], 0, 2);
+                                        ?>
+                                        <div class="flex items-start gap-3 group border-b border-slate-100 pb-3 mb-3 last:border-0 last:pb-0 last:mb-0">
+                                            <div class="mt-0.5">
+                                                <span class="flex items-center justify-center size-8 rounded bg-primary/10 text-primary text-xs font-bold uppercase"><?= esc($prefix) ?></span>
+                                            </div>
+                                            <div class="flex-1">
+                                                <div class="flex justify-between items-start">
+                                                    <h4 class="text-sm font-semibold text-slate-800 group-hover:text-primary transition-colors cursor-pointer"><?= esc($k['nama_klasifikasi']) ?></h4>
+                                                    <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                        <button class="text-slate-400 hover:text-primary"><span class="material-symbols-outlined text-base">edit</span></button>
+                                                        <button class="text-slate-400 hover:text-red-500"><span class="material-symbols-outlined text-base">delete</span></button>
+                                                    </div>
+                                                </div>
+                                                <p class="text-xs text-slate-500 mt-0.5">Kode: <span class="font-semibold text-slate-700"><?= esc($k['kode_klasifikasi']) ?></span></p>
+                                            </div>
+                                        </div>
+                                        <?php endforeach; ?>
+                                    <?php else: ?>
+                                        <p class="text-xs text-slate-500 text-center">Belum ada data klasifikasi.</p>
+                                    <?php endif; ?>
+                                    
+                                    <div class="pt-3">
+                                        <button class="w-full py-2 border border-dashed border-slate-300 rounded-lg text-xs text-slate-500 hover:text-primary hover:border-primary hover:bg-slate-50 transition-all flex items-center justify-center gap-1">
+                                            <span class="material-symbols-outlined text-sm">add_circle</span> Add New Category
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-blue-50 rounded-xl p-5 border border-blue-100">
+                            <h4 class="text-sm font-bold text-primary mb-2">Need Help?</h4>
+                            <p class="text-xs text-slate-600 mb-3 leading-relaxed">Refer to the official Ministry of Transportation decree regarding archive classification codes before adding new categories.</p>
+                            <a class="text-xs font-semibold text-primary hover:underline flex items-center gap-1" href="#">
+                                Download Regulation PDF <span class="material-symbols-outlined text-sm">open_in_new</span>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
-        <?php endforeach; ?>
-
-    </div>
+        </div>
+    </main>
 </div>
 
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 pb-12">
-    <div class="lg:col-span-2 space-y-4">
-        <div class="bg-white p-8 rounded-xl border border-slate-200 shadow-sm">
-            <h3 class="text-lg font-bold text-slate-900 mb-6">Pendaftaran Lemari Baru</h3>
-            
-            <form action="<?= base_url('admin/lemari/simpan') ?>" method="post" class="space-y-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">ID / Nama Lemari</label>
-                        <input name="nama_lemari" required class="w-full bg-slate-50 border-slate-200 rounded-lg text-sm px-4 py-2.5 focus:ring-primary focus:border-primary" placeholder="Contoh: Lemari Arsip C1" type="text"/>
-                    </div>
-                    <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Lokasi Penempatan</label>
-                        <input name="lokasi_ruangan" required class="w-full bg-slate-50 border-slate-200 rounded-lg text-sm px-4 py-2.5 focus:ring-primary focus:border-primary" placeholder="Contoh: Gedung Utama - Ruang 101" type="text"/>
-                    </div>
-                    <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Jumlah Rak (Laci)</label>
-                        <input name="jumlah_rak" required class="w-full bg-slate-50 border-slate-200 rounded-lg text-sm px-4 py-2.5 focus:ring-primary focus:border-primary" type="number" value="4" min="1"/>
-                    </div>
-                    <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Batas Maksimal Per Rak</label>
-                        <div class="flex items-center gap-2">
-                            <input name="kapasitas_per_rak" required class="flex-1 bg-slate-50 border-slate-200 rounded-lg text-sm px-4 py-2.5 focus:ring-primary focus:border-primary" type="number" value="50" min="1"/>
-                            <span class="text-xs text-slate-400">Dokumen</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="flex justify-end pt-2">
-                    <button class="bg-primary text-white px-8 py-3 rounded-lg text-sm font-bold shadow-lg hover:bg-blue-700 transition-all" type="submit">Simpan Konfigurasi Lemari</button>
-                </div>
-            </form>
-            
-        </div>
-    </div>
-    
-    <div class="space-y-4">
-        <div class="bg-white p-8 rounded-xl border border-slate-200 shadow-sm">
-            <div class="flex items-center gap-2 mb-6">
-                <span class="material-symbols-outlined text-primary">info</span>
-                <h3 class="text-lg font-bold text-slate-900">Panduan Teknis</h3>
-            </div>
-            <ul class="space-y-4 text-sm text-slate-600">
-                <li class="flex gap-3"><span class="size-5 bg-slate-100 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0">1</span><span>Tentukan ID unik untuk setiap lemari fisik.</span></li>
-                <li class="flex gap-3"><span class="size-5 bg-slate-100 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0">2</span><span>Gunakan batas maksimal standar (50 dokumen) untuk mencegah kerusakan rak.</span></li>
-                <li class="flex gap-3"><span class="size-5 bg-slate-100 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0">3</span><span>Sistem akan memberi peringatan jika rak mencapai 90% kapasitas.</span></li>
-            </ul>
-        </div>
-    </div>
-</div>
-
-<?= $this->endSection() ?>
+</body>
+</html>

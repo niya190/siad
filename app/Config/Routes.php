@@ -6,11 +6,14 @@ use CodeIgniter\Router\RouteCollection;
  * @var RouteCollection $routes
  */
 
-// Halaman Login (Tetap sama)
-$routes->get('/', 'Login::index');
-$routes->get('/login', 'Login::index');
-$routes->post('/login', 'Login::attemptLogin');
-$routes->get('/logout', 'Login::logout');
+// Menampilkan halaman form login
+$routes->get('login', 'Login::index');
+
+// Memproses data yang dikirim dari form login (INI YANG KURANG)
+$routes->post('login', 'Login::attemptLogin'); 
+
+// Rute logout yang tadi kita buat
+$routes->get('login/logout', 'Login::logout');
 
 // Dashboard Pusat (Redirector berdasarkan role baru)
 $routes->get('/dashboard', 'Dashboard::index', ['filter' => 'auth']);
@@ -35,14 +38,22 @@ $routes->group('admin', ['filter' => 'admin'], static function ($routes) {
     // === INI BAGIAN YANG KURANG TADI ===
     // ARSIP ADMIN (Search, Create, Edit, Detail)
     $routes->get('arsip/search', 'Admin\ArsipController::search'); // <-- Ini kuncinya biar search jalan!
-    $routes->get('arsip/create', 'Admin\ArsipController::create');
     $routes->get('arsip/edit/(:num)', 'Admin\ArsipController::edit/$1');
     $routes->get('arsip/detail/(:num)', 'Admin\ArsipController::detail/$1');
+    // Rute Form Arsip
+    $routes->get('arsip/create', 'Admin\ArsipController::create');
+    $routes->post('arsip/save', 'Admin\ArsipController::save');
+    
+    // Rute AJAX Lokasi Fisik Dinamis
+    $routes->post('arsip/getLemari', 'Admin\ArsipController::getLemari');
+    $routes->post('arsip/getRak', 'Admin\ArsipController::getRak');
+    $routes->get('settings', 'Admin\SettingsController::index');
+    $routes->post('settings/save', 'Admin\SettingsController::save');
     // ===================================
 });
 // Ganti bagian STAF yang lama dengan ini:
 $routes->group('staf', ['filter' => 'staf'], static function ($routes) {
-    $routes->get('dashboard', 'Staf\Dashboard::index'); // Dashboard biarkan
+    $routes->get('dashboard', 'Staf\DashboardController::index'); // Dashboard biarkan
     
     // ARSIP
     $routes->get('arsip', 'Staf\ArsipController::index');
