@@ -16,10 +16,10 @@ class StafFilter implements FilterInterface
         }
 
         // 2. Cek apakah role-nya BENAR-BENAR 'staf'
-        if (session()->get('role') !== 'staf') {
-            // Jika bukan staf (misal admin iseng masuk link staf), tendang ke dashboard dia sendiri
-            return redirect()->to('/dashboard');
-        }
+        // KODE BARU (BENAR) - Pakai 'staff' (double f) sesuai database
+if (session()->get('role') !== 'staff') {
+    return redirect()->to('/dashboard');
+}
     }
 
     public function after(RequestInterface $request, ResponseInterface $response, $arguments = null)

@@ -18,8 +18,17 @@ class AdminFilter implements FilterInterface
         }
 
         // 2. Cek apakah role-nya BUKAN admin
-       if (session()->get('role') != 'admin') {
-    return redirect()->to(base_url('staf/dashboard')); // Arahkan dengan benar ke staf
+       // KODE BARU - Lebih aman
+if (session()->get('role') !== 'admin') {
+    // Cek role-nya apa, baru lempar ke dashboard masing-masing
+    if (session()->get('role') === 'staff') {
+        return redirect()->to(base_url('staf/dashboard'));
+    }
+    // Jika ada pimpinan nanti:
+    // elseif (session()->get('role') === 'pimpinan') { return redirect()->to(base_url('pimpinan/dashboard')); }
+    
+    // Default fallback biar gak looping
+    return redirect()->to('/'); 
 }
     }
 

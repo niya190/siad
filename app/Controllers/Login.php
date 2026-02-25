@@ -50,12 +50,15 @@ if ($password_benar) {
     
     // Redirect sesuai role (hanya Admin & Staff)
     // Redirect sesuai role
-    if ($user['role'] == 'admin') {
-        return redirect()->to(base_url('admin/dashboard'));
-    } else {
-        // PASTIKAN TULISANNYA 'staf/dashboard', bukan cuma 'dashboard'
-        return redirect()->to(base_url('staf/dashboard')); 
-    }
+    // app/Controllers/Login.php bagian bawah function attemptLogin
+if ($user['role'] == 'admin') {
+    return redirect()->to(base_url('admin/dashboard'));
+} elseif ($user['role'] == 'staff') { // Pastikan ceknya 'staff' double f
+    return redirect()->to(base_url('staf/dashboard')); 
+} else {
+    // Default jika role tidak dikenali
+    return redirect()->to('/');
+}
 }
         } else {
             // Jika User TIDAK DITEMUKAN

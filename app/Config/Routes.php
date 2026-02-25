@@ -61,26 +61,13 @@ $routes->group('staf', ['filter' => 'staf'], static function ($routes) {
     $routes->post('arsip/simpan', 'Staf\ArsipController::save');
     $routes->get('arsip/delete/(:num)', 'Staf\ArsipController::delete/$1');
     // Tambahkan di dalam $routes->group('staf' ...
-$routes->get('arsip/cetak/(:num)', 'Staf\ArsipController::exportPDF/$1');
-// Tambahkan di grup Staf
-$routes->get('arsip/edit/(:num)', 'Staf\ArsipController::edit/$1');
-$routes->post('arsip/update/(:num)', 'Staf\ArsipController::update/$1');
-$routes->get('arsip/detail/(:num)', 'Staf\ArsipController::detail/$1');
-$routes->post('arsip/disposisi', 'Staf\ArsipController::disposisi');
+$routes->get('arsip-masuk', 'Staf\ArsipMasukController::index');
+$routes->get('arsip-keluar', 'Staf\ArsipKeluarController::index');
+$routes->get('nota-dinas', 'Staf\NotaDinasController::index');
+$routes->get('laporan', 'Staf\LaporanController::index');
 });
 
-// GRUP PIMPINAN
-$routes->group('pimpinan', ['filter' => 'pimpinan'], static function ($routes) {
-    $routes->get('dashboard', 'Pimpinan\Dashboard::index');
-    
-    // Approval
-    $routes->get('surat-masuk', 'Pimpinan\SuratMasukController::index');
-    $routes->get('surat-masuk/detail/(:num)', 'Pimpinan\SuratMasukController::detail/$1');
-    $routes->post('surat-masuk/approve', 'Pimpinan\SuratMasukController::approve');
-    $routes->post('surat-masuk/revisi', 'Pimpinan\SuratMasukController::revisi');
-    $routes->get('arsip', 'Pimpinan\SuratMasukController::arsip'); 
-    $routes->get('pdf/(:num)', 'Pimpinan\SuratMasukController::exportPDF/$1');// <-- Route Baru
-});
+
 // Rute untuk validasi QR (Bisa diakses publik tanpa login)
 $routes->get('validasi/cek/(:segment)', 'Validasi::cek/$1');
 

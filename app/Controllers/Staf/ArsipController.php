@@ -46,10 +46,45 @@ class ArsipController extends BaseController
 
     public function create()
     {
+        // Pastikan memanggil model yang dibutuhkan
+        $klasifikasiModel = new \App\Models\KlasifikasiModel();
+        $ruanganModel = new \App\Models\RuanganModel();
+
+        // Siapkan data untuk dikirim ke View
         $data = [
-            'title' => 'Batch Digitalization (Input Arsip Baru)'
+            'title'       => 'Rekam Arsip Baru',
+            'klasifikasi' => $klasifikasiModel->findAll(),
+            'ruangan'     => $ruanganModel->findAll(),
+            
+            // INI YANG BIKIN ERROR TADI (Variabelnya ketinggalan)
+            'opsi_jenis'  => ['Surat Masuk', 'Surat Keluar', 'Nota Dinas'] 
         ];
 
         return view('staf/arsip/create_view', $data);
+    }
+    public function detail($id)
+    {
+        $model = new ArsipModel();
+
+        // Mengambil data arsip beserta data relasi (Klasifikasi dan Lokasi Fisik)
+        $arsip = $model->select('data_arsip.*, master_klasifikasi.nama_klasifikasi, master_rak.nama_rak, master_lemari.nama_lemari, master_ruangan.nama_ruangan')
+            ->join('master_klasifikasi', 'master_klasifikasi.id_klasifikasi = data_arsip.id_klasifikasi', 'left')
+            ->join('master_rak', 'master_rak.id_rak = data_arsip.id_rak', 'left')
+            ->join('master_lemari', 'master_lemari.id_lemari = master_rak.id_lemari', 'left')
+            ->join('master_ruangan', 'master_ruangan.id_ruangan = master_lemari.id_ruangan', 'left')
+            ->where('data_arsip.id_arsip', $id)
+            ->first();
+
+        // Jika arsip tidak ditemukan (mencegah error kalau user mengarang ID di URL)
+        if (!$arsip) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound('Dokumen arsip tidak ditemukan.');
+        }
+
+        $data = [
+            'title' => 'Detail Dokumen - ' . $arsip['nomor_surat'],
+            'arsip' => $arsip
+        ];
+
+        return view('staf/arsip/detail_view', $data);
     }
 }
