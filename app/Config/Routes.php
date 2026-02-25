@@ -25,15 +25,21 @@ $routes->group('admin', ['filter' => 'admin'], static function ($routes) {
     $routes->post('user/save', 'Admin\UserController::save');
 
     // Kelola Master Data Kantor
-    // Ganti Fakultas/Jurusan menjadi Divisi/Bidang
     $routes->get('divisi', 'Admin\DivisiController::index'); 
     $routes->get('jabatan', 'Admin\JabatanController::index');
-    $routes->get('jenis-surat', 'Admin\JenisSuratController::index'); // Nota Dinas, Surat Perintah, dll
+    $routes->get('jenis-surat', 'Admin\JenisSuratController::index'); 
     $routes->get('gedung', 'Admin\GedungController::index');
     $routes->get('lemari', 'Admin\LemariController::index'); 
     $routes->post('lemari/simpan', 'Admin\LemariController::simpan');
-});
 
+    // === INI BAGIAN YANG KURANG TADI ===
+    // ARSIP ADMIN (Search, Create, Edit, Detail)
+    $routes->get('arsip/search', 'Admin\ArsipController::search'); // <-- Ini kuncinya biar search jalan!
+    $routes->get('arsip/create', 'Admin\ArsipController::create');
+    $routes->get('arsip/edit/(:num)', 'Admin\ArsipController::edit/$1');
+    $routes->get('arsip/detail/(:num)', 'Admin\ArsipController::detail/$1');
+    // ===================================
+});
 // Ganti bagian STAF yang lama dengan ini:
 $routes->group('staf', ['filter' => 'staf'], static function ($routes) {
     $routes->get('dashboard', 'Staf\Dashboard::index'); // Dashboard biarkan

@@ -31,9 +31,31 @@
         }
     </script>
     <style>
-        body { font-family: 'Public Sans', sans-serif; background-color: #f6f6f8; }
-        .sidebar-active { background-color: rgba(255, 255, 255, 0.1); border-left: 4px solid #d4af37; }
-    </style>
+    /* 1. Paksa HTML dan Body supaya matiin efek mentul-mentul (bounce) */
+    html, body {
+        font-family: "Public Sans", sans-serif;
+        overscroll-behavior: none !important;
+        overscroll-behavior-y: none !important;
+    }
+
+    /* 2. Paksa semua area yang bisa di-scroll (nav, div utama) biar ikutan mentok */
+    .overflow-y-auto, .overflow-auto {
+        overscroll-behavior: none !important;
+    }
+    
+    .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    
+    /* 3. Sembunyiin scrollbar jelek tapi tetap bisa scroll */
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+    .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+</style>
 </head>
 <body class="text-slate-800 bg-[#f6f6f8]">
 <div class="flex min-h-screen">
@@ -47,7 +69,7 @@
             <p class="text-[10px] text-white/60 mt-2 uppercase tracking-widest font-medium">Administrator System</p>
         </div>
         
-        <nav class="flex-1 px-4 py-6 space-y-1">
+       <nav class="flex-1 px-4 py-4 space-y-1 overflow-y-auto overscroll-none no-scrollbar">
             <div class="pt-2 pb-2 px-4 text-[10px] font-bold text-white/40 uppercase tracking-widest">Main Menu</div>
             
             <a class="flex items-center px-4 py-3 text-sm rounded-lg transition-all <?= (uri_string() == 'admin/dashboard') ? 'sidebar-active text-white font-bold' : 'text-white/70 hover:bg-white/10 hover:text-white' ?>" 
@@ -84,20 +106,25 @@
             </a>
         </nav>
         
-        <div class="p-4 border-t border-white/10">
-            <div class="flex items-center p-3 bg-white/10 rounded-xl">
-                <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center font-bold text-sm">
-                    <?= session()->get('nama_user') ? substr(session()->get('nama_user'), 0, 2) : 'AD' ?>
-                </div>
-                <div class="ml-3 overflow-hidden flex-1">
-                    <p class="text-xs font-bold truncate"><?= session()->get('nama_user') ?? 'Administrator' ?></p>
-                    <p class="text-[10px] text-white/50 truncate">Super Admin</p>
-                </div>
-                <a href="<?= base_url('logout') ?>" class="text-white/40 hover:text-red-400 transition-colors">
-                    <span class="material-symbols-outlined text-lg">logout</span>
-                </a>
-            </div>
+  <div class="p-4">
+    <div class="bg-[#1e44ad]/50 rounded-xl p-3 flex items-center gap-3">
+        
+        <div class="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold">
+            <?= session()->get('nama_user') ? substr(session()->get('nama_user'), 0, 2) : 'AD' ?>
         </div>
+        
+        <div class="flex-1 overflow-hidden">
+            <p class="text-white text-xs font-bold truncate"><?= session()->get('nama_user') ?? 'Administrator' ?></p>
+            <p class="text-blue-300 text-[10px] truncate">Super Admin</p>
+        </div>
+        
+        <a href="<?= base_url('logout') ?>" class="text-white/50 hover:text-red-400 transition-colors" title="Logout">
+            <span class="material-symbols-outlined text-xl">logout</span>
+        </a>
+        
+    </div>
+</div>
+</div>
     </aside>
 
     <main class="flex-1 ml-64 bg-[#f6f6f8]">

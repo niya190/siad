@@ -3,25 +3,24 @@
 namespace App\Controllers\Staf;
 
 use App\Controllers\BaseController;
-use App\Models\ArsipModel; // Panggil Model Arsip
+use App\Models\ArsipModel;
 
 class Dashboard extends BaseController
 {
     public function index()
     {
-        $model = new ArsipModel();
+        $arsipModel = new ArsipModel();
 
-        // Hitung Data Real-time
+        // Ambil tanggal hari ini
+        $hari_ini = date('Y-m-d');
+
+        // Hitung statistik untuk ditampilkan di view
         $data = [
-            'title' => 'Dashboard Arsip',
-            'total_arsip'   => $model->countAllResults(),
-            'surat_masuk'   => $model->where('jenis_arsip', 'Surat Masuk')->countAllResults(),
-            'surat_keluar'  => $model->where('jenis_arsip', 'Surat Keluar')->countAllResults(),
-            'sk'            => $model->where('jenis_arsip', 'SK (Surat Keputusan)')->countAllResults(),
-            'berkas_proyek' => $model->where('jenis_arsip', 'Berkas Proyek')->countAllResults(),
-            
-            // Ambil 5 Arsip Terbaru untuk ditampilkan di tabel mini
-            'terbaru'       => $model->orderBy('created_at', 'DESC')->findAll(5)
+            'title'          => 'Dashboard Staf',
+            'surat_masuk'    => $arsipModel->where('jenis_arsip', 'Surat Masuk')->countAllResults(),
+            'surat_keluar'   => $arsipModel->where('jenis_arsip', 'Surat Keluar')->countAllResults(),
+            'total_arsip'    => $arsipModel->countAllResults(),
+            'arsip_hari_ini' => $arsipModel->where('tanggal_terima', $hari_ini)->countAllResults()
         ];
 
         return view('staf/dashboard_view', $data);

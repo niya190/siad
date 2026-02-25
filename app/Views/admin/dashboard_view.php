@@ -1,185 +1,295 @@
-<?= $this->extend('layouts/admin_tailwind') ?>
-<?= $this->section('content') ?>
-
-<section>
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-        <div class="bg-white p-5 rounded-xl border border-slate-200 flex items-center shadow-sm">
-            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center text-green-600 mr-4">
-                <span class="material-icons">dns</span>
-            </div>
-            <div>
-                <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Status Server</p>
-                <div class="flex items-center space-x-2">
-                    <span class="text-xl font-bold">Online</span>
-                    <span class="h-2 w-2 bg-green-500 rounded-full animate-pulse"></span>
-                </div>
-                <p class="text-[10px] text-slate-500">Sistem Berjalan Normal</p>
-            </div>
-        </div>
-
-        <div class="bg-white p-5 rounded-xl border border-slate-200 flex items-center shadow-sm">
-            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center text-primary mr-4">
-                <span class="material-icons">folder_open</span>
-            </div>
-            <div>
-                <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Total Arsip Sistem</p>
-                <span class="text-xl font-bold"><?= $total_arsip ?? 0 ?> Dokumen</span>
-                <p class="text-[10px] text-slate-500">Tersimpan di Database</p>
-            </div>
-        </div>
-
-        <div class="bg-red-50 p-5 rounded-xl border border-red-200 flex items-center shadow-sm relative overflow-hidden group">
-            <div class="absolute right-0 top-0 h-full w-2 bg-red-500"></div>
-            <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center text-red-600 mr-4">
-                <span class="material-icons">report_problem</span>
-            </div>
-            <div class="flex-1">
-                <p class="text-[11px] font-bold text-red-600 uppercase tracking-widest">Peringatan Penyimpanan</p>
-                <span class="text-lg font-bold">Cek Kapasitas Lemari</span>
-                <p class="text-[10px] text-red-500">Beberapa rak mungkin sudah penuh</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="mb-8">
-    <div class="flex items-center justify-between mb-6">
-        <h2 class="text-lg font-bold text-slate-800 flex items-center">
-            <span class="material-icons mr-2 text-primary">account_tree</span>
-            Status Kapasitas Penyimpanan Fisik
-        </h2>
-        <button class="text-xs font-bold text-primary hover:underline">Kelola Master Data</button>
-    </div>
-    
-    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
-        
-        <?php if(!empty($daftar_lemari)): ?>
-            <?php foreach($daftar_lemari as $lemari): ?>
-                <?php 
-                    // Hitung persentase keterisian lemari
-                    $persen = 0;
-                    if($lemari['kapasitas_maksimal'] > 0){
-                        $persen = round(($lemari['jumlah_terisi'] / $lemari['kapasitas_maksimal']) * 100);
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Unified Archive Management System - Distrik Navigasi Tanjungpinang</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#0e4c92", // Deep Ministry Blue
+                        secondary: "#fbb03b", // Gold Accent
+                        "background-light": "#f8fafc",
+                        "background-dark": "#0f172a",
+                        "surface-light": "#ffffff",
+                        "surface-dark": "#1e293b",
+                        "sidebar-bg": "#ffffff",
+                        "sidebar-active": "#eff6ff",
+                    },
+                    fontFamily: {
+                        display: ["Public Sans", "sans-serif"],
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02)',
                     }
+                },
+            },
+        }
+    </script>
+<style>
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased h-screen flex flex-col overflow-hidden">
+<header class="h-16 bg-white dark:bg-surface-dark border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-6 z-20 shadow-sm flex-shrink-0">
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-lg bg-primary flex items-center justify-center text-white shrink-0 shadow-lg shadow-blue-900/20">
+<span class="material-symbols-outlined text-2xl">anchor</span>
+</div>
+<div class="flex flex-col">
+<h1 class="text-slate-900 dark:text-white text-sm font-bold leading-tight">Distrik Navigasi</h1>
+<p class="text-slate-500 dark:text-slate-400 text-xs font-medium">Tanjungpinang - Kelas I</p>
+</div>
+</div>
+<div class="h-8 w-px bg-slate-200 dark:bg-slate-700 mx-2 hidden md:block"></div>
+<nav class="hidden md:flex items-center gap-1">
+<a class="px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800 rounded-md transition-colors" href="#">Help Center</a>
+<a class="px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800 rounded-md transition-colors" href="#">Documentation</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative hidden sm:block">
+<span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-slate-400 text-lg">search</span>
+</span>
+<input class="pl-9 pr-4 py-1.5 text-sm bg-slate-100 dark:bg-slate-800 border-none rounded-full w-64 focus:ring-2 focus:ring-primary/20 placeholder-slate-400 text-slate-700 dark:text-slate-200" placeholder="Global search..." type="text"/>
+</div>
+<button class="relative p-2 rounded-full text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-surface-dark"></span>
+</button>
+<div class="flex items-center gap-3 pl-4 border-l border-slate-200 dark:border-slate-700">
+<div class="text-right hidden sm:block">
+<p class="text-sm font-semibold text-slate-900 dark:text-white leading-none">Administrator</p>
+<span class="inline-flex items-center gap-1 mt-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-primary/10 text-primary dark:text-blue-300 uppercase tracking-wide">
+                        Admin Role
+                    </span>
+</div>
+<div class="size-9 rounded-full bg-slate-200 dark:bg-slate-700 bg-center bg-cover border-2 border-white dark:border-slate-600 shadow-sm cursor-pointer" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCntFHYm9aQxI9nbHCyyFKqtGy4gspqrYtEl-CzhPd5HNJuyxdEDtLLKaUAemZt91bE9KWYtTg0pYTF9gDk2X3YND_ZZK63HGuayaKRg0BesXtTDwIeiMcRgoowqL_ZbdwbDYFJibUggj7t6025M_PiNm7Z9HrF7pPWYnp7vhe3o_A9fNl-lpnPA9HSZZiKmQhbfWvR4mzV4KUpRxYErCON6Q62pK0Y6fpajgxEcg-5gAVgBuUa0IvMByqgi9kH99jdHG_5zzBBjHU');"></div>
+</div>
+</div>
+</header>
+<div class="flex flex-1 overflow-hidden">
+<aside class="w-64 bg-sidebar-bg dark:bg-surface-dark border-r border-slate-200 dark:border-slate-800 flex flex-col flex-shrink-0 z-10">
+<div class="p-4 border-b border-slate-100 dark:border-slate-800/50">
+<button class="w-full flex items-center justify-between px-3 py-2 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-primary/30 transition-colors group">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-xl">admin_panel_settings</span>
+<span class="text-sm font-medium text-slate-700 dark:text-slate-200">Admin View</span>
+</div>
+<span class="material-symbols-outlined text-slate-400 text-sm group-hover:text-primary transition-colors">expand_more</span>
+</button>
+</div>
+<nav class="flex-1 overflow-y-auto py-4 px-3 space-y-1">
+<div class="px-3 mb-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">Main Menu</div>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary text-white font-medium shadow-md shadow-primary/20 transition-all group" href="<?= base_url('admin/dashboard') ?>">
+<span class="material-symbols-outlined filled">dashboard</span>
+<span class="text-sm">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-primary dark:hover:text-white transition-colors group" href="<?= base_url('admin/arsip/search') ?>">
+    <span class="material-symbols-outlined group-hover:text-primary dark:group-hover:text-blue-400 transition-colors">search</span>
+    <span class="text-sm font-medium">Search Archives</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-primary dark:hover:text-white transition-colors group" href="<?= base_url('admin/arsip/create') ?>">
+<span class="material-symbols-outlined group-hover:text-primary dark:group-hover:text-blue-400 transition-colors">input</span>
+<span class="text-sm font-medium">Data Entry</span>
+</a>
+<div class="mt-6 mb-2 px-3 text-xs font-semibold text-slate-400 uppercase tracking-wider">Administrative</div>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-primary dark:hover:text-white transition-colors group" href="<?= base_url('admin/lemari') ?>">
+<span class="material-symbols-outlined group-hover:text-primary dark:group-hover:text-blue-400 transition-colors">folder_managed</span>
+<span class="text-sm font-medium">Archive Manager</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-primary dark:hover:text-white transition-colors group" href="<?= base_url('admin/user') ?>">
+<span class="material-symbols-outlined group-hover:text-primary dark:group-hover:text-blue-400 transition-colors">people</span>
+<span class="text-sm font-medium">User Management</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-primary dark:hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary dark:group-hover:text-blue-400 transition-colors">settings_applications</span>
+<span class="text-sm font-medium">System Settings</span>
+</a>
+</nav>
+<div class="p-4 border-t border-slate-200 dark:border-slate-800">
+<div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-primary dark:text-blue-400">cloud_sync</span>
+<span class="text-xs font-bold text-primary dark:text-blue-400">System Status</span>
+</div>
+<div class="w-full bg-blue-200 dark:bg-blue-800 rounded-full h-1.5 mb-1">
+<div class="bg-primary h-1.5 rounded-full" style="width: 98%"></div>
+</div>
+<p class="text-[10px] text-slate-500 dark:text-slate-400 text-right">Online (98%)</p>
+</div>
+</div>
+</aside>
 
-                    // Tentukan warna berdasarkan persentase
-                    $color = 'bg-primary'; $text_color = 'text-primary'; $bg_icon = 'bg-blue-50';
-                    $ring = '';
-                    
-                    if($persen >= 80 && $persen < 90) {
-                        $color = 'bg-yellow-500'; $text_color = 'text-yellow-600'; $bg_icon = 'bg-yellow-50';
-                    } elseif($persen >= 90) {
-                        $color = 'bg-red-600'; $text_color = 'text-red-600'; $bg_icon = 'bg-red-50';
-                        $ring = 'ring-1 ring-red-500/30'; // Efek merah menyala
-                    }
-                ?>
-
-                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm <?= $ring ?>">
-                    <div class="flex justify-between items-start mb-4">
-                        <span class="p-2 <?= $bg_icon ?> rounded-lg <?= $text_color ?>">
-                            <span class="material-icons">inventory_2</span>
-                        </span>
-                        <?php if($persen >= 90): ?>
-                            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-100 text-red-600">Kritis</span>
-                        <?php endif; ?>
-                    </div>
-                    
-                    <h3 class="font-bold text-slate-900 mb-1"><?= $lemari['nama_lemari'] ?></h3>
-                    <p class="text-xs text-slate-500 mb-4"><?= $lemari['lokasi_ruangan'] ?></p>
-                    
-                    <div class="space-y-1.5">
-                        <div class="flex justify-between text-[10px] font-bold uppercase tracking-tight">
-                            <span>Kapasitas (<?= $lemari['jumlah_terisi'] ?>/<?= $lemari['kapasitas_maksimal'] ?>)</span>
-                            <span class="<?= $text_color ?>"><?= $persen ?>%</span>
-                        </div>
-                        <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                            <div class="<?= $color ?> h-full rounded-full" style="width: <?= $persen ?>%"></div>
-                        </div>
-                    </div>
-                </div>
-            <?php endforeach; ?>
-        <?php else: ?>
-            <div class="col-span-full p-4 bg-yellow-50 text-yellow-700 rounded-lg text-sm">
-                Belum ada data lemari. Silakan tambahkan di Database.
-            </div>
-        <?php endif; ?>
-
-        <div class="bg-primary/5 p-6 rounded-xl border-2 border-dashed border-primary/20 flex flex-col items-center justify-center text-center group cursor-pointer hover:bg-primary/10 transition-all">
-            <div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
-                <span class="material-icons">add</span>
-            </div>
-            <span class="text-xs font-bold text-primary uppercase">Tambah Lemari</span>
-            <p class="text-[10px] text-slate-500 mt-1">Registrasi kapasitas baru</p>
-        </div>
-    </div>
-</section>
-
-<section>
-    <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-        <div class="p-6 border-b border-slate-100 flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center text-primary">
-                    <span class="material-icons">manage_accounts</span>
-                </div>
-                <div>
-                    <h2 class="text-lg font-bold text-slate-800">Manajemen Pengguna</h2>
-                    <p class="text-xs text-slate-500">Daftar staf dan pimpinan yang aktif di sistem</p>
-                </div>
-            </div>
-            <button class="bg-primary hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-xs font-bold flex items-center shadow-md transition-all">
-                <span class="material-icons text-sm mr-2">person_add</span> Tambah User
-            </button>
-        </div>
-        
-        <div class="overflow-x-auto">
-            <table class="w-full text-left">
-                <thead>
-                    <tr class="bg-slate-50 text-slate-500 text-[11px] font-bold uppercase tracking-wider border-b border-slate-100">
-                        <th class="px-6 py-4">NIP / Username</th>
-                        <th class="px-6 py-4">Nama Lengkap</th>
-                        <th class="px-6 py-4">Role / Hak Akses</th>
-                        <th class="px-6 py-4 text-right">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-100">
-                    
-                    <?php if(!empty($users)): ?>
-                        <?php foreach($users as $u): ?>
-                        <tr class="data-table-row transition-colors">
-                            <td class="px-6 py-4 text-sm font-mono text-slate-600"><?= $u['kode_peran'] ?></td>
-                            <td class="px-6 py-4">
-                                <div class="flex items-center">
-                                    <div class="w-8 h-8 rounded-full bg-slate-200 mr-3 flex items-center justify-center text-xs font-bold text-slate-600">
-                                        <?= substr($u['nama_user'], 0, 2) ?>
-                                    </div>
-                                    <span class="text-sm font-bold text-slate-800"><?= $u['nama_user'] ?></span>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <?php 
-                                    $bg = 'bg-slate-100 text-slate-700';
-                                    if(strtolower($u['role']) == 'admin') $bg = 'bg-purple-100 text-purple-700';
-                                    if(strtolower($u['role']) == 'staf') $bg = 'bg-blue-100 text-blue-700';
-                                    if(strtolower($u['role']) == 'pimpinan') $bg = 'bg-emerald-100 text-emerald-700';
-                                ?>
-                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold <?= $bg ?> uppercase">
-                                    <?= $u['role'] ?>
+<main class="flex-1 flex flex-col overflow-hidden bg-slate-50/50 dark:bg-background-dark relative">
+<div class="flex-1 overflow-y-auto p-6 lg:p-8 scroll-smooth">
+<div class="max-w-6xl mx-auto space-y-6">
+<div class="flex justify-between items-end pb-2">
+<div>
+<nav class="flex text-sm text-slate-500 dark:text-slate-400 mb-1">
+<a class="hover:text-primary" href="#">Home</a>
+<span class="mx-2">/</span>
+<span class="text-slate-800 dark:text-white font-medium">Dashboard Overview</span>
+</nav>
+<h2 class="text-2xl font-bold text-slate-900 dark:text-white">Archive Dashboard</h2>
+</div>
+<div class="flex gap-3">
+<button class="flex items-center gap-2 px-4 py-2 bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-700 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 shadow-sm transition-all">
+<span class="material-symbols-outlined text-lg">download</span>
+                                Export Report
+                            </button>
+<a href="<?= base_url('admin/arsip/create') ?>" class="flex items-center gap-2 bg-primary hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow-md shadow-blue-500/20 transition-all font-medium text-sm">
+<span class="material-symbols-outlined text-lg">add</span>
+                                Add New Record
+                            </a>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="bg-white dark:bg-surface-dark rounded-xl p-6 shadow-soft border border-slate-100 dark:border-slate-700 flex flex-col justify-between group hover:border-blue-200 dark:hover:border-blue-800 transition-all">
+<div class="flex justify-between items-start mb-4">
+<div class="p-3 bg-blue-50 dark:bg-blue-900/30 rounded-lg text-primary dark:text-blue-400">
+<span class="material-symbols-outlined text-2xl">inventory_2</span>
+</div>
+<span class="text-xs font-medium text-emerald-600 bg-emerald-50 dark:bg-emerald-900/20 px-2 py-1 rounded-full flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">trending_up</span> +5.2%
                                 </span>
-                            </td>
-                            <td class="px-6 py-4 text-right space-x-1">
-                                <button class="p-1.5 text-slate-400 hover:text-primary transition-colors"><span class="material-icons text-lg">edit</span></button>
-                                <button class="p-1.5 text-slate-400 hover:text-red-500 transition-colors"><span class="material-icons text-lg">lock_reset</span></button>
-                            </td>
-                        </tr>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <tr><td colspan="4" class="text-center py-4 text-slate-500">Belum ada data user.</td></tr>
-                    <?php endif; ?>
-
-                </tbody>
-            </table>
-        </div>
-    </div>
-</section>
-
-<?= $this->endSection() ?>
+</div>
+<div>
+<h3 class="text-3xl font-bold text-slate-900 dark:text-white mb-1"><?= number_format($total_archives ?? 0) ?></h3>
+<p class="text-sm text-slate-500 dark:text-slate-400 font-medium">Total Archives Stored</p>
+</div>
+</div>
+<div class="bg-white dark:bg-surface-dark rounded-xl p-6 shadow-soft border border-slate-100 dark:border-slate-700 flex flex-col justify-between group hover:border-secondary/50 dark:hover:border-secondary/30 transition-all">
+<div class="flex justify-between items-start mb-4">
+<div class="p-3 bg-amber-50 dark:bg-amber-900/30 rounded-lg text-secondary dark:text-amber-400">
+<span class="material-symbols-outlined text-2xl">schedule</span>
+</div>
+<span class="text-xs font-medium text-emerald-600 bg-emerald-50 dark:bg-emerald-900/20 px-2 py-1 rounded-full flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">trending_up</span> +12%
+                                </span>
+</div>
+<div>
+<h3 class="text-3xl font-bold text-slate-900 dark:text-white mb-1"><?= number_format($new_entries ?? 0) ?></h3>
+<p class="text-sm text-slate-500 dark:text-slate-400 font-medium">New Entries (This Week)</p>
+</div>
+</div>
+<div class="bg-white dark:bg-surface-dark rounded-xl p-6 shadow-soft border border-slate-100 dark:border-slate-700 flex flex-col justify-between group hover:border-red-200 dark:hover:border-red-800 transition-all">
+<div class="flex justify-between items-start mb-4">
+<div class="p-3 bg-red-50 dark:bg-red-900/30 rounded-lg text-red-500 dark:text-red-400">
+<span class="material-symbols-outlined text-2xl">hourglass_bottom</span>
+</div>
+<span class="text-xs font-medium text-red-600 bg-red-50 dark:bg-red-900/20 px-2 py-1 rounded-full flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">warning</span> Action
+                                </span>
+</div>
+<div>
+<h3 class="text-3xl font-bold text-slate-900 dark:text-white mb-1"><?= $expiring_records ?? 0 ?></h3>
+<p class="text-sm text-slate-500 dark:text-slate-400 font-medium">Expiring Records</p>
+</div>
+</div>
+</div>
+<div class="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
+<div class="p-5 border-b border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/20">
+<div class="flex flex-col lg:flex-row gap-4 justify-between items-center">
+<div class="flex items-center gap-2 w-full lg:w-auto">
+<h3 class="font-bold text-slate-900 dark:text-white whitespace-nowrap">Document Archives</h3>
+<div class="h-4 w-px bg-slate-300 dark:bg-slate-600 mx-2 hidden lg:block"></div>
+<div class="flex gap-2 overflow-x-auto pb-1 lg:pb-0 w-full lg:w-auto">
+<button class="px-3 py-1.5 text-xs font-medium bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-full text-slate-700 dark:text-slate-200 shadow-sm hover:border-primary hover:text-primary transition-colors whitespace-nowrap">All Files</button>
+</div>
+</div>
+<div class="flex items-center gap-2 w-full lg:w-auto">
+<div class="relative flex-1 lg:flex-none lg:w-64">
+<span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-slate-400 text-sm">search</span>
+</span>
+<input class="block w-full pl-9 pr-3 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-lg text-sm focus:ring-1 focus:ring-primary focus:border-primary placeholder-slate-400" placeholder="Filter by keyword..." type="text"/>
+</div>
+</div>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-sm text-left">
+<thead class="text-xs text-slate-500 dark:text-slate-400 uppercase bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700">
+<tr>
+<th class="px-6 py-4 font-semibold w-12">No</th>
+<th class="px-6 py-4 font-semibold" scope="col">Reference / Subject</th>
+<th class="px-6 py-4 font-semibold" scope="col">Category</th>
+<th class="px-6 py-4 font-semibold" scope="col">Date</th>
+<th class="px-6 py-4 font-semibold text-right" scope="col">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-200 dark:divide-slate-700">
+<?php if(empty($recent_archives)): ?>
+<tr>
+    <td colspan="5" class="px-6 py-4 text-center text-slate-500">Belum ada data arsip.</td>
+</tr>
+<?php else: ?>
+    <?php $no = 1; foreach($recent_archives as $arsip): ?>
+    <tr class="group hover:bg-blue-50/50 dark:hover:bg-blue-900/10 transition-colors">
+        <td class="px-6 py-4"><?= $no++ ?></td>
+        <td class="px-6 py-4">
+            <div class="flex flex-col">
+                <span class="font-medium text-slate-900 dark:text-white group-hover:text-primary transition-colors">
+                    <?= esc($arsip['nomor_surat']) ?>
+                </span>
+                <span class="text-xs text-slate-500 dark:text-slate-400 truncate max-w-xs">
+                    <?= esc($arsip['perihal']) ?>
+                </span>
+            </div>
+        </td>
+        <td class="px-6 py-4">
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600">
+                <?= esc($arsip['jenis_arsip']) ?>
+            </span>
+        </td>
+        <td class="px-6 py-4 text-slate-500 dark:text-slate-400 text-xs">
+            <?= date('d M Y', strtotime($arsip['tanggal_terima'])) ?>
+        </td>
+        <td class="px-6 py-4 text-right">
+            <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <a href="<?= base_url('admin/arsip/edit/'.$arsip['id_arsip']) ?>" class="p-1 text-slate-400 hover:text-primary transition-colors" title="Edit">
+                    <span class="material-symbols-outlined text-lg">edit</span>
+                </a>
+                <?php if($arsip['file_scan']): ?>
+                <a href="<?= base_url('uploads/arsip/'.$arsip['file_scan']) ?>" target="_blank" class="p-1 text-slate-400 hover:text-primary transition-colors" title="Download">
+                    <span class="material-symbols-outlined text-lg">download</span>
+                </a>
+                <?php endif; ?>
+            </div>
+        </td>
+    </tr>
+    <?php endforeach; ?>
+<?php endif; ?>
+</tbody>
+</table>
+</div>
+<div class="px-5 py-3 border-t border-slate-200 dark:border-slate-700 flex items-center justify-between">
+<span class="text-xs text-slate-500 dark:text-slate-400">Menampilkan 5 arsip terbaru</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

@@ -1,144 +1,122 @@
-<?= $this->extend('layouts/admin_layout') ?>
-
+<?= $this->extend('layouts/staf_tailwind') ?>
 <?= $this->section('content') ?>
 
-<div class="row mb-4">
-    <div class="col-12">
-        <div class="card bg-gradient-primary shadow-lg" style="border-radius: 15px; overflow: hidden; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);">
-            <div class="card-body p-4">
-                <div class="row align-items-center">
-                    <div class="col-md-8">
-                        <h2 class="font-weight-bold text-white mb-2">
-                            Selamat Datang, <?= session()->get('nama_user') ?>! 👋
-                        </h2>
-                        <p class="text-white-50 mb-0" style="font-size: 1.1rem;">
-                            Sistem Informasi Arsip Dinamis (SIAD) Kantor Distrik Navigasi.
-                            <br>Kelola surat dan dokumen fisik dengan mudah, cepat, dan terukur.
-                        </p>
+<div class="mb-8">
+    <h2 class="text-3xl font-black tracking-tight text-slate-900">Staff Overview</h2>
+    <p class="text-slate-500 mt-1">Operational status for <?= date('l, F jS') ?>.</p>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+        <div class="flex items-center justify-between mb-4">
+            <span class="material-symbols-outlined text-amber-500 bg-amber-50 p-2 rounded-lg">scan</span>
+        </div>
+        <p class="text-slate-500 text-sm font-medium">Surat Masuk</p>
+        <h3 class="text-3xl font-black text-slate-900 mt-1"><?= $surat_masuk ?></h3>
+    </div>
+    
+    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+        <div class="flex items-center justify-between mb-4">
+            <span class="material-symbols-outlined text-primary bg-primary/10 p-2 rounded-lg">folder_open</span>
+        </div>
+        <p class="text-slate-500 text-sm font-medium">Surat Keluar</p>
+        <h3 class="text-3xl font-black text-slate-900 mt-1"><?= $surat_keluar ?></h3>
+    </div>
+    
+    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+        <div class="flex items-center justify-between mb-4">
+            <span class="material-symbols-outlined text-blue-500 bg-blue-50 p-2 rounded-lg">inventory_2</span>
+        </div>
+        <p class="text-slate-500 text-sm font-medium">Total Seluruh Arsip</p>
+        <h3 class="text-3xl font-black text-slate-900 mt-1"><?= $total_arsip ?></h3>
+    </div>
+    
+    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+        <div class="flex items-center justify-between mb-4">
+            <span class="material-symbols-outlined text-green-500 bg-green-50 p-2 rounded-lg">inventory</span>
+            <?php if($arsip_hari_ini > 0): ?>
+                <span class="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded">+<?= $arsip_hari_ini ?> Today</span>
+            <?php endif; ?>
+        </div>
+        <p class="text-slate-500 text-sm font-medium">Arsip Masuk Hari Ini</p>
+        <h3 class="text-3xl font-black text-slate-900 mt-1"><?= $arsip_hari_ini ?></h3>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="lg:col-span-2 space-y-6">
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm">
+            <div class="p-6 border-b border-slate-100 flex items-center justify-between">
+                <h3 class="text-lg font-bold text-slate-900">Recent Activity</h3>
+                <a href="<?= base_url('staf/arsip') ?>" class="text-primary text-sm font-semibold hover:underline">View All</a>
+            </div>
+            <div class="divide-y divide-slate-100">
+                <div class="p-6 flex gap-4 hover:bg-slate-50 transition-colors">
+                    <div class="flex-shrink-0">
+                        <div class="size-10 rounded-full bg-primary/10 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-primary">auto_awesome</span>
+                        </div>
                     </div>
-                    <div class="col-md-4 text-right d-none d-md-block">
-                        <i class="fas fa-ship fa-5x" style="opacity: 0.2; color: white;"></i>
+                    <div class="flex-1">
+                        <p class="text-sm font-medium text-slate-900">
+                            Sistem <span class="text-slate-500 font-normal">siap digunakan untuk pendaftaran arsip.</span>
+                        </p>
+                        <p class="text-xs text-slate-400 mt-1">Hari ini</p>
+                    </div>
+                </div>
+                <div class="p-6 flex gap-4 hover:bg-slate-50 transition-colors">
+                    <div class="flex-shrink-0">
+                        <div class="size-10 rounded-full bg-slate-100 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-slate-400">qr_code_2</span>
+                        </div>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-sm font-medium text-slate-900">
+                            Jangan lupa untuk menempelkan QR Code/Label pada setiap <span class="font-bold">Box Penyimpanan</span>
+                        </p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-
-<div class="row">
-    <div class="col-lg-3 col-6">
-        <div class="small-box bg-white shadow-sm p-3">
-            <div class="inner">
-                <h3 class="font-weight-bold text-primary"><?= $total_arsip ?></h3>
-                <p class="text-muted font-weight-bold text-uppercase" style="font-size: 0.8rem; letter-spacing: 1px;">Total Dokumen</p>
+    
+    <div class="space-y-6">
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="p-6 border-b border-slate-100">
+                <h3 class="text-lg font-bold text-slate-900">Quick Actions</h3>
             </div>
-            <div class="icon">
-                <i class="fas fa-folder text-primary" style="opacity: 0.15;"></i>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-lg-3 col-6">
-        <div class="small-box bg-white shadow-sm p-3">
-            <div class="inner">
-                <h3 class="font-weight-bold text-success"><?= $surat_masuk ?></h3>
-                <p class="text-muted font-weight-bold text-uppercase" style="font-size: 0.8rem; letter-spacing: 1px;">Surat Masuk</p>
-            </div>
-            <div class="icon">
-                <i class="fas fa-inbox text-success" style="opacity: 0.15;"></i>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-lg-3 col-6">
-        <div class="small-box bg-white shadow-sm p-3">
-            <div class="inner">
-                <h3 class="font-weight-bold text-warning"><?= $surat_keluar ?></h3>
-                <p class="text-muted font-weight-bold text-uppercase" style="font-size: 0.8rem; letter-spacing: 1px;">Surat Keluar</p>
-            </div>
-            <div class="icon">
-                <i class="fas fa-paper-plane text-warning" style="opacity: 0.15;"></i>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-lg-3 col-6">
-        <div class="small-box bg-white shadow-sm p-3">
-            <div class="inner">
-                <h3 class="font-weight-bold text-danger"><?= $berkas_proyek ?></h3>
-                <p class="text-muted font-weight-bold text-uppercase" style="font-size: 0.8rem; letter-spacing: 1px;">Berkas Proyek</p>
-            </div>
-            <div class="icon">
-                <i class="fas fa-project-diagram text-danger" style="opacity: 0.15;"></i>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="row mt-2">
-    <div class="col-lg-4">
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title font-weight-bold">Akses Cepat</h3>
-            </div>
-            <div class="card-body">
-                <a href="<?= base_url('staf/arsip/baru') ?>" class="btn btn-primary btn-block mb-3 py-3 shadow-sm text-left">
-                    <i class="fas fa-plus-circle mr-2 bg-white text-primary p-1 rounded-circle"></i> Input Arsip Baru
+            <div class="p-6 grid grid-cols-1 gap-3">
+                <a href="<?= base_url('staf/arsip/create') ?>" class="flex items-center gap-3 p-4 bg-slate-50 hover:bg-primary/5 hover:border-primary/50 transition-all border border-transparent rounded-xl text-left cursor-pointer">
+                    <div class="size-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+                        <span class="material-symbols-outlined">move_to_inbox</span>
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold text-slate-900">New Intake</p>
+                        <p class="text-xs text-slate-500">Log incoming materials</p>
+                    </div>
                 </a>
-                <a href="<?= base_url('staf/arsip') ?>" class="btn btn-outline-secondary btn-block mb-2 py-2 text-left">
-                    <i class="fas fa-search mr-2"></i> Cari Dokumen
-                </a>
-                <a href="<?= base_url('staf/arsip') ?>" class="btn btn-outline-secondary btn-block mb-2 py-2 text-left">
-                    <i class="fas fa-print mr-2"></i> Cetak Label Rak
-                </a>
+                <button class="flex items-center gap-3 p-4 bg-slate-50 hover:bg-primary/5 hover:border-primary/50 transition-all border border-transparent rounded-xl text-left">
+                    <div class="size-10 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center">
+                        <span class="material-symbols-outlined">print</span>
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold text-slate-900">Print Label</p>
+                        <p class="text-xs text-slate-500">Generate box barcode</p>
+                    </div>
+                </button>
             </div>
         </div>
-    </div>
-
-    <div class="col-lg-8">
-        <div class="card">
-            <div class="card-header border-0 d-flex justify-content-between align-items-center">
-                <h3 class="card-title font-weight-bold">📝 Aktivitas Terbaru</h3>
-                <a href="<?= base_url('staf/arsip') ?>" class="text-muted text-sm">Lihat Semua</a>
+        
+        <div class="bg-primary-dark rounded-xl p-6 text-white shadow-lg relative overflow-hidden">
+            <div class="relative z-10">
+                <h4 class="font-bold text-lg mb-2">System Status</h4>
+                <div class="flex items-center gap-2 mb-4">
+                    <span class="size-2 bg-green-400 rounded-full"></span>
+                    <span class="text-xs text-white/80 font-medium">All archives synced</span>
+                </div>
             </div>
-            <div class="card-body table-responsive p-0">
-                <table class="table table-hover text-nowrap">
-                    <thead class="bg-light">
-                    <tr>
-                        <th class="border-top-0">No. Surat</th>
-                        <th class="border-top-0">Perihal</th>
-                        <th class="border-top-0">Tgl Input</th>
-                        <th class="border-top-0">Lokasi</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <?php if(!empty($terbaru)): ?>
-                        <?php foreach($terbaru as $row): ?>
-                        <tr>
-                            <td class="font-weight-bold text-primary"><?= $row['nomor_surat'] ?></td>
-                            <td>
-                                <span class="d-block text-truncate" style="max-width: 250px;">
-                                    <?= $row['perihal'] ?>
-                                </span>
-                            </td>
-                            <td class="text-muted text-sm">
-                                <i class="far fa-clock mr-1"></i> <?= date('d M Y', strtotime($row['created_at'])) ?>
-                            </td>
-                            <td>
-                                <span class="badge badge-light border text-dark">
-                                    <i class="fas fa-map-marker-alt text-danger mr-1"></i> <?= $row['lokasi_penyimpanan'] ?>
-                                </span>
-                            </td>
-                        </tr>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <tr>
-                            <td colspan="4" class="text-center py-4 text-muted">Belum ada data arsip terbaru.</td>
-                        </tr>
-                    <?php endif; ?>
-                    </tbody>
-                </table>
-            </div>
+            <div class="absolute -bottom-4 -right-4 size-24 bg-white/5 rounded-full"></div>
+            <div class="absolute top-0 right-0 size-32 bg-white/10 rounded-full blur-3xl"></div>
         </div>
     </div>
 </div>
