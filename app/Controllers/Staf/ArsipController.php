@@ -87,4 +87,44 @@ class ArsipController extends BaseController
 
         return view('staf/arsip/detail_view', $data);
     }
+    // =========================================================
+    // TAMBAHKAN KODE INI DI BAWAH FUNGSI detail()
+    // =========================================================
+
+    public function edit($id)
+    {
+        $model = new ArsipModel();
+        $arsip = $model->find($id);
+
+        if (!$arsip) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound('Data arsip tidak ditemukan.');
+        }
+
+        $klasifikasiModel = new \App\Models\KlasifikasiModel();
+        $ruanganModel = new \App\Models\RuanganModel();
+
+        $data = [
+            'title'       => 'Edit Arsip',
+            'arsip'       => $arsip,
+            'klasifikasi' => $klasifikasiModel->findAll(),
+            'ruangan'     => $ruanganModel->findAll(),
+            'opsi_jenis'  => ['Surat Masuk', 'Surat Keluar', 'Nota Dinas'] 
+        ];
+
+        // Akan memanggil halaman edit (pastikan kamu sudah/akan buat file edit_view.php)
+        return view('staf/arsip/edit_view', $data);
+    }
+
+    public function save()
+    {
+        // Nanti di sini isi logika untuk insert ke database
+        // Sementara kita buat kembali ke dashboard biar gak error 404
+        return redirect()->to(base_url('staf/dashboard'));
+    }
+
+    public function delete($id)
+    {
+        // Nanti di sini isi logika untuk hapus dari database
+        return redirect()->to(base_url('staf/dashboard'));
+    }
 }

@@ -73,10 +73,10 @@
 </span>
 <input class="pl-9 pr-4 py-1.5 text-sm bg-slate-100 dark:bg-slate-800 border-none rounded-full w-64 focus:ring-2 focus:ring-primary/20 placeholder-slate-400 text-slate-700 dark:text-slate-200" placeholder="Global search..." type="text"/>
 </div>
-<button class="relative p-2 rounded-full text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
-<span class="material-symbols-outlined">notifications</span>
-<span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-surface-dark"></span>
-</button>
+<a href="<?= base_url('admin/notifications') ?>" class="relative p-2 rounded-full text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer">
+    <span class="material-symbols-outlined">notifications</span>
+    <span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-surface-dark"></span>
+</a>
 <div class="flex items-center gap-3 pl-4 border-l border-slate-200 dark:border-slate-700">
             <div class="text-right hidden sm:block">
                 <p class="text-sm font-semibold text-slate-900 dark:text-white leading-none"><?= esc(session()->get('nama_lengkap') ?? 'Administrator') ?></p>
@@ -167,10 +167,10 @@
 <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Archive Dashboard</h2>
 </div>
 <div class="flex gap-3">
-<button class="flex items-center gap-2 px-4 py-2 bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-700 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 shadow-sm transition-all">
-<span class="material-symbols-outlined text-lg">download</span>
-                                Export Report
-                            </button>
+<a href="<?= base_url('admin/arsip/export') ?>" class="flex items-center gap-2 px-4 py-2 bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-700 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 shadow-sm transition-all cursor-pointer w-fit">
+    <span class="material-symbols-outlined text-lg">download</span>
+    Export Report
+</a>
 <a href="<?= base_url('admin/arsip/create') ?>" class="flex items-center gap-2 bg-primary hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow-md shadow-blue-500/20 transition-all font-medium text-sm">
 <span class="material-symbols-outlined text-lg">add</span>
                                 Add New Record

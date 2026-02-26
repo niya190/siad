@@ -7,18 +7,17 @@ use CodeIgniter\Router\RouteCollection;
  */
 
 // Menampilkan halaman form login
+$routes->get('/', 'Login::index');
 $routes->get('login', 'Login::index');
-
-// Memproses data yang dikirim dari form login (INI YANG KURANG)
 $routes->post('login', 'Login::attemptLogin'); 
-
-// Rute logout yang tadi kita buat
 $routes->get('login/logout', 'Login::logout');
 
-// Dashboard Pusat (Redirector berdasarkan role baru)
+// Dashboard Pusat
 $routes->get('/dashboard', 'Dashboard::index', ['filter' => 'auth']);
 
-// --- GRUP ROUTE ADMIN (Bagian Tata Usaha / IT) ---
+// ====================================================================
+// GRUP ROUTE ADMIN
+// ====================================================================
 $routes->group('admin', ['filter' => 'admin'], static function ($routes) {
     $routes->get('dashboard', 'Admin\Dashboard::index');
     
@@ -35,12 +34,10 @@ $routes->group('admin', ['filter' => 'admin'], static function ($routes) {
     $routes->get('lemari', 'Admin\LemariController::index'); 
     $routes->post('lemari/simpan', 'Admin\LemariController::simpan');
 
-    // === INI BAGIAN YANG KURANG TADI ===
-    // ARSIP ADMIN (Search, Create, Edit, Detail)
-    $routes->get('arsip/search', 'Admin\ArsipController::search'); // <-- Ini kuncinya biar search jalan!
+    // ARSIP ADMIN
+    $routes->get('arsip/search', 'Admin\ArsipController::search'); 
     $routes->get('arsip/edit/(:num)', 'Admin\ArsipController::edit/$1');
     $routes->get('arsip/detail/(:num)', 'Admin\ArsipController::detail/$1');
-    // Rute Form Arsip
     $routes->get('arsip/create', 'Admin\ArsipController::create');
     $routes->post('arsip/save', 'Admin\ArsipController::save');
     
@@ -49,27 +46,34 @@ $routes->group('admin', ['filter' => 'admin'], static function ($routes) {
     $routes->post('arsip/getRak', 'Admin\ArsipController::getRak');
     $routes->get('settings', 'Admin\SettingsController::index');
     $routes->post('settings/save', 'Admin\SettingsController::save');
-    // ===================================
+    $routes->get('arsip/export', 'Admin\ArsipController::export');
+    $routes->post('arsip/export/process', 'Admin\ArsipController::processExport');
+    $routes->get('notifications', 'Admin\NotificationController::index');
 });
-// Ganti bagian STAF yang lama dengan ini:
+
+// ====================================================================
+// GRUP ROUTE STAF (INI YANG SUDAH DIPERBAIKI FULL)
+// ====================================================================
 $routes->group('staf', ['filter' => 'staf'], static function ($routes) {
-    $routes->get('dashboard', 'Staf\DashboardController::index'); // Dashboard biarkan
+    $routes->get('dashboard', 'Staf\DashboardController::index'); 
     
-    // ARSIP
+    // Navigasi Utama Staf
+    $routes->get('arsip-masuk', 'Staf\ArsipMasukController::index');
+    $routes->get('arsip-keluar', 'Staf\ArsipKeluarController::index');
+    $routes->get('nota-dinas', 'Staf\NotaDinasController::index');
+    $routes->get('laporan', 'Staf\LaporanController::index');
+
+    // CRUD ARSIP STAF (INI KUNCI BIAR GAK 404)
     $routes->get('arsip', 'Staf\ArsipController::index');
     $routes->get('arsip/create', 'Staf\ArsipController::create');
     $routes->post('arsip/simpan', 'Staf\ArsipController::save');
     $routes->get('arsip/delete/(:num)', 'Staf\ArsipController::delete/$1');
-    // Tambahkan di dalam $routes->group('staf' ...
-$routes->get('arsip-masuk', 'Staf\ArsipMasukController::index');
-$routes->get('arsip-keluar', 'Staf\ArsipKeluarController::index');
-$routes->get('nota-dinas', 'Staf\NotaDinasController::index');
-$routes->get('laporan', 'Staf\LaporanController::index');
+    
+    // --> INI DIA YANG BIKIN ERROR KALAU HILANG <--
+    $routes->get('arsip/detail/(:any
+)', 'Staf\ArsipController::detail/$1'); 
+    $routes->get('arsip/edit/(:any)', 'Staf\ArsipController::edit/$1');     
+    
+    
 });
 
-
-// Rute untuk validasi QR (Bisa diakses publik tanpa login)
-$routes->get('validasi/cek/(:segment)', 'Validasi::cek/$1');
-
-// Rute untuk tombol setujui (Masuk dalam grup Staf)
-$routes->get('staf/arsip/setujui/(:num)', 'Staf\ArsipController::setujui/$1');

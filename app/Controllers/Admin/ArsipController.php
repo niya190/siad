@@ -115,4 +115,89 @@ class ArsipController extends BaseController
         $rakModel = new RakModel();
         return $this->response->setJSON($rakModel->where('id_lemari', $id_lemari)->findAll());
     }
+    // ====================================================================
+    // FITUR EXPORT LAPORAN
+    // ====================================================================
+    public function export()
+    {
+        $klasifikasiModel = new \App\Models\KlasifikasiModel();
+        $ruanganModel     = new \App\Models\RuanganModel();
+        $lemariModel      = new \App\Models\LemariModel();
+
+        $data = [
+            'title'       => 'Export Record',
+            'klasifikasi' => $klasifikasiModel->findAll(),
+            'ruangan'     => $ruanganModel->findAll(),
+            'lemari'      => $lemariModel->findAll(),
+        ];
+
+        return view('admin/arsip/export_view', $data);
+    }
+
+    public function processExport()
+    {
+        $arsipModel = new \App\Models\ArsipModel();
+
+        // 1. Tangkap semua input filter dari form
+        $startDate  = $this->request->getPost('start_date');
+        $endDate    = $this->request->getPost('end_date');
+        $jenisArsip = $this->request->getPost('jenis_arsip');
+        $ruangan    = $this->request->getPost('ruangan');
+        $lemari     = $this->request->getPost('lemari');
+        $format     = $this->request->getPost('format'); 
+
+        // 2. Query dasar (STATUS SAYA GANTI JADI KETERANGAN BIAR TIDAK ERROR)
+        $builder = $arsipModel->select('data_arsip.nomor_surat, data_arsip.jenis_arsip, data_arsip.perihal, data_arsip.tanggal_surat, data_arsip.pengirim_tujuan, data_arsip.keterangan, master_klasifikasi.nama_klasifikasi, master_ruangan.nama_ruangan, master_lemari.nama_lemari, master_rak.nama_rak')
+            ->join('master_klasifikasi', 'master_klasifikasi.id_klasifikasi = data_arsip.id_klasifikasi', 'left')
+            ->join('master_rak', 'master_rak.id_rak = data_arsip.id_rak', 'left')
+            ->join('master_lemari', 'master_lemari.id_lemari = master_rak.id_lemari', 'left')
+            ->join('master_ruangan', 'master_ruangan.id_ruangan = master_lemari.id_ruangan', 'left');
+
+        // 3. Terapkan Filter
+        if (!empty($startDate))  $builder->where('data_arsip.tanggal_surat >=', $startDate);
+        if (!empty($endDate))    $builder->where('data_arsip.tanggal_surat <=', $endDate);
+        if (!empty($jenisArsip) && $jenisArsip != 'All Types') $builder->where('data_arsip.jenis_arsip', $jenisArsip);
+        if (!empty($ruangan) && $ruangan != 'All Rooms')       $builder->where('master_ruangan.nama_ruangan', $ruangan);
+        if (!empty($lemari) && $lemari != 'All Cabinets')      $builder->where('master_lemari.nama_lemari', $lemari);
+
+        $dataArsip = $builder->orderBy('data_arsip.tanggal_surat', 'DESC')->findAll();
+
+        // 4. Logika Pembuatan File CSV
+        if ($format == 'csv' || $format == 'excel') {
+            $filename = 'Export_Arsip_' . date('Ymd_His') . '.csv';
+
+            header("Content-Description: File Transfer");
+            header("Content-Disposition: attachment; filename=$filename");
+            header("Content-Type: application/csv; charset=UTF-8");
+
+            $file = fopen('php://output', 'w');
+            
+            // Tambahkan BOM agar Excel membaca karakter dengan benar
+            fputs($file, "\xEF\xBB\xBF"); 
+
+            // Tulis Judul Kolom (Status diganti Keterangan)
+            $header = array("Nomor Surat", "Jenis Arsip", "Perihal", "Tanggal Surat", "Pengirim/Tujuan", "Klasifikasi", "Ruangan", "Lemari", "Rak", "Keterangan");
+            fputcsv($file, $header);
+
+            // Tulis Baris Data
+            foreach ($dataArsip as $row) {
+                fputcsv($file, array(
+                    $row['nomor_surat'],
+                    $row['jenis_arsip'],
+                    $row['perihal'],
+                    $row['tanggal_surat'],
+                    $row['pengirim_tujuan'],
+                    $row['nama_klasifikasi'] ?? '-',
+                    $row['nama_ruangan'] ?? '-',
+                    $row['nama_lemari'] ?? '-',
+                    $row['nama_rak'] ?? '-',
+                    $row['keterangan'] ?? '-'
+                ));
+            }
+            fclose($file);
+            exit; 
+        } 
+        
+        return redirect()->back()->with('error', 'Format PDF membutuhkan library tambahan. Silakan gunakan format Excel (CSV).');
+    }
 }
