@@ -59,15 +59,15 @@
         </div>
         <div class="flex items-center gap-4">
             <div class="hidden w-64 md:block">
-                <div class="relative flex items-center">
+                <form action="<?= base_url('staf/arsip') ?>" method="GET" class="relative flex items-center">
                     <span class="material-symbols-outlined absolute left-3 text-[20px] text-blue-300">search</span>
-                    <input class="w-full rounded-lg border-none bg-blue-900/50 py-2 pl-10 pr-4 text-sm text-white placeholder-blue-300 focus:bg-blue-900 focus:ring-2 focus:ring-white/20" placeholder="Cari arsip..." type="text"/>
-                </div>
+                    <input name="keyword" class="w-full rounded-lg border-none bg-blue-900/50 py-2 pl-10 pr-4 text-sm text-white placeholder-blue-300 focus:bg-blue-900 focus:ring-2 focus:ring-white/20" placeholder="Cari arsip..." type="text"/>
+                </form>
             </div>
-            <button class="relative flex size-9 items-center justify-center rounded-full text-blue-100 hover:bg-white/10 hover:text-white">
+            <a href="<?= base_url('staf/notifications') ?>" class="relative flex size-9 items-center justify-center rounded-full text-blue-100 hover:bg-white/10 hover:text-white transition-colors cursor-pointer">
                 <span class="material-symbols-outlined text-[20px]">notifications</span>
                 <span class="absolute right-1.5 top-1.5 size-2 rounded-full bg-red-500 ring-2 ring-nav-blue"></span>
-            </button>
+            </a>
             <div class="flex items-center gap-3 border-l border-blue-800 pl-4">
                 <div class="hidden text-right md:block">
                     <p class="text-sm font-semibold text-white"><?= esc(session()->get('nama_lengkap') ?? 'User Staff') ?></p>
@@ -101,9 +101,9 @@
                 <p class="mt-2 text-lg text-slate-500 dark:text-slate-400">Selamat datang kembali, <?= esc($namaDepan) ?>! Berikut adalah ringkasan aktivitas arsip hari ini.</p>
             </div>
             <div class="flex gap-3">
-                <button class="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary/90 shadow-sm shadow-primary/20">
+                <a href="<?= base_url('staf/arsip/create') ?>" class="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary/90 shadow-sm shadow-primary/20 w-fit cursor-pointer">
                     <span class="material-symbols-outlined text-[20px]">add</span> Arsip Baru
-                </button>
+                </a>
             </div>
         </div>
 
@@ -178,7 +178,7 @@
                 <div class="rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
                     <div class="border-b border-slate-100 px-6 py-4 dark:border-slate-800 flex justify-between items-center">
                         <h3 class="text-lg font-bold text-slate-900 dark:text-white">Aktivitas Terbaru</h3>
-                        <a class="text-sm font-medium text-primary hover:text-primary/80" href="#">Lihat Semua</a>
+                        <a class="text-sm font-medium text-primary hover:text-primary/80" href="<?= base_url('staf/arsip') ?>">Lihat Semua</a>
                     </div>
                     <div class="divide-y divide-slate-100 dark:divide-slate-800">
                         <?php if(empty($terbaru)): ?>
@@ -264,9 +264,7 @@
                         <div class="bg-white h-2 rounded-full" style="width: 85%"></div>
                     </div>
                     <p class="text-xs text-blue-100 mb-6">Kapasitas penyimpanan fisik hampir penuh. Harap lakukan pengecekan rutin pada rak arsip lama.</p>
-                    <button class="w-full rounded-lg bg-white text-primary py-2.5 text-sm font-bold hover:bg-blue-50 transition-colors">
-                        Kelola Penyimpanan
-                    </button>
+                    <a href="<?= base_url('staf/laporan') ?>" class="block text-center w-full rounded-lg bg-white text-primary py-2.5 text-sm font-bold hover:bg-blue-50 transition-colors">Lihat Laporan Arsip</a>
                 </div>
             </div>
         </div>

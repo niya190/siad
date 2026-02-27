@@ -62,17 +62,17 @@
 </div>
 <div class="h-8 w-px bg-slate-200 dark:bg-slate-700 mx-2 hidden md:block"></div>
 <nav class="hidden md:flex items-center gap-1">
-<a class="px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800 rounded-md transition-colors" href="#">Help Center</a>
-<a class="px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800 rounded-md transition-colors" href="#">Documentation</a>
+    <a class="px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800 rounded-md transition-colors cursor-pointer" onclick="alert('Pusat Bantuan sedang dalam perbaikan.')">Help Center</a>
+    <a class="px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800 rounded-md transition-colors cursor-pointer" onclick="alert('Dokumentasi Sistem v1.0 segera dirilis.')">Documentation</a>
 </nav>
 </div>
 <div class="flex items-center gap-4">
-<div class="relative hidden sm:block">
-<span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-<span class="material-symbols-outlined text-slate-400 text-lg">search</span>
-</span>
-<input class="pl-9 pr-4 py-1.5 text-sm bg-slate-100 dark:bg-slate-800 border-none rounded-full w-64 focus:ring-2 focus:ring-primary/20 placeholder-slate-400 text-slate-700 dark:text-slate-200" placeholder="Global search..." type="text"/>
-</div>
+<form action="<?= base_url('admin/arsip/search') ?>" method="GET" class="relative hidden sm:block">
+    <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+        <span class="material-symbols-outlined text-slate-400 text-lg">search</span>
+    </span>
+    <input name="keyword" class="pl-9 pr-4 py-1.5 text-sm bg-slate-100 dark:bg-slate-800 border-none rounded-full w-64 focus:ring-2 focus:ring-primary/20 placeholder-slate-400 text-slate-700 dark:text-slate-200" placeholder="Global search..." type="text"/>
+</form>
 <a href="<?= base_url('admin/notifications') ?>" class="relative p-2 rounded-full text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer">
     <span class="material-symbols-outlined">notifications</span>
     <span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-surface-dark"></span>
@@ -160,7 +160,7 @@
 <div class="flex justify-between items-end pb-2">
 <div>
 <nav class="flex text-sm text-slate-500 dark:text-slate-400 mb-1">
-<a class="hover:text-primary" href="#">Home</a>
+<a class="hover:text-primary" href="<?= base_url('admin/dashboard') ?>">Home</a>
 <span class="mx-2">/</span>
 <span class="text-slate-800 dark:text-white font-medium">Dashboard Overview</span>
 </nav>

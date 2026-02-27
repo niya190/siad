@@ -45,16 +45,16 @@
         
          <div class="flex items-center gap-4">
             <div class="hidden w-64 md:block">
-                <div class="relative flex items-center">
-                    <span class="material-symbols-outlined absolute left-3 text-[20px] text-blue-300">search</span>
-                    <input class="w-full rounded-lg border-none bg-blue-900/50 py-2 pl-10 pr-4 text-sm text-white placeholder-blue-300 focus:bg-blue-900 focus:ring-2 focus:ring-white/20" placeholder="Cari arsip..." type="text"/>
-                </div>
-            </div>
+    <form action="<?= base_url('staf/arsip') ?>" method="GET" class="relative flex items-center">
+        <span class="material-symbols-outlined absolute left-3 text-[20px] text-blue-300">search</span>
+        <input name="keyword" class="w-full rounded-lg border-none bg-blue-900/50 py-2 pl-10 pr-4 text-sm text-white placeholder-blue-300 focus:bg-blue-900 focus:ring-2 focus:ring-white/20" placeholder="Cari arsip..." type="text"/>
+    </form>
+</div>
             
-            <button class="relative flex size-9 items-center justify-center rounded-full text-blue-100 hover:bg-white/10 hover:text-white">
-                <span class="material-symbols-outlined text-[20px]">notifications</span>
-                <span class="absolute right-1.5 top-1.5 size-2 rounded-full bg-red-500 ring-2 ring-nav-blue"></span>
-            </button>
+            <a href="<?= base_url('staf/notifications') ?>" class="relative flex size-9 items-center justify-center rounded-full text-blue-100 hover:bg-white/10 hover:text-white transition-colors">
+    <span class="material-symbols-outlined text-[20px]">notifications</span>
+    <span class="absolute right-1.5 top-1.5 size-2 rounded-full bg-red-500 ring-2 ring-nav-blue"></span>
+</a>
 
             <div class="flex items-center gap-3 border-l border-blue-800 pl-4">
                 <div class="hidden text-right md:block">
