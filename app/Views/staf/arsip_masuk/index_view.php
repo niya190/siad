@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title><?= $title ?? 'Arsip Masuk' ?> - SiArsip Navigasi</title>
+    <title><?= $title ?? 'Arsip Masuk' ?> - SIAD Navigasi</title>
     <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;700;900&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -35,7 +35,7 @@
                     <span class="material-symbols-outlined text-2xl">folder_managed</span>
                 </div>
                 <div>
-                    <h2 class="text-lg font-bold leading-tight text-white">SiArsip</h2>
+                    <h2 class="text-lg font-bold leading-tight text-white">SIAD</h2>
                     <p class="text-xs text-blue-200">Navigasi Tanjungpinang</p>
                 </div>
             </div>
@@ -195,9 +195,9 @@
 
                                 <td class="whitespace-nowrap px-6 py-4 text-right">
                                     <div class="flex justify-end gap-2">
-                                        <a href="<?= base_url('staf/arsip/detail/' . $a['id_arsip']) ?>" class="rounded p-1.5 text-slate-400 hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-slate-800" title="Lihat Detail">
-                                            <span class="material-symbols-outlined text-[20px]">visibility</span>
-                                        </a>
+                                        <a href="<?= base_url('staf/arsip/detail/' . $a['id_arsip']) ?>" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Lihat Detail">
+    <span class="material-symbols-outlined text-xl">visibility</span>
+</a>
                                         <a href="<?= base_url('staf/arsip/edit/' . $a['id_arsip']) ?>" class="rounded p-1.5 text-slate-400 hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-slate-800" title="Edit Arsip">
                                             <span class="material-symbols-outlined text-[20px]">edit</span>
                                         </a>

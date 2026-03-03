@@ -117,10 +117,10 @@
                 <span class="text-sm font-medium">User Management</span>
             </a>
             
-            <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-primary dark:hover:text-white transition-colors group" href="#">
-                <span class="material-symbols-outlined group-hover:text-primary dark:group-hover:text-blue-400 transition-colors">settings_applications</span>
-                <span class="text-sm font-medium">System Settings</span>
-            </a>
+            <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-primary dark:hover:text-white transition-colors group" 
+   href="<?= base_url('admin/settings') ?>">  <span class="material-symbols-outlined group-hover:text-primary dark:group-hover:text-blue-400 transition-colors">settings_applications</span>
+    <span class="text-sm font-medium">System Settings</span>
+</a>
         </nav>
         
         <div class="p-4 border-t border-slate-200 dark:border-slate-800">

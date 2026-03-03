@@ -3,42 +3,30 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title><?= $title ?? 'Laporan & Analitik' ?> - SiArsip Navigasi</title>
-    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;700;900&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+    <title><?= $title ?> - SiArsip</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <script>
-      tailwind.config = {
-        darkMode: "class",
-        theme: { extend: { colors: { "primary": "#135bec", "background-light": "#f6f6f8", "background-dark": "#101622", "nav-blue": "#1e40af" }, fontFamily: { "display": ["Public Sans", "sans-serif"] } } }
-      }
+        tailwind.config = { darkMode: "class", theme: { extend: { colors: { primary: "#135bec", "background-light": "#f6f6f8", "nav-blue": "#1e40af" }, fontFamily: { display: ["Public Sans", "sans-serif"] } } } }
     </script>
-    <style> body { font-family: "Public Sans", sans-serif; } </style>
 </head>
-<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen flex flex-col font-display">
+<body class="bg-background-light font-display text-slate-900 min-h-screen flex flex-col">
 
-<header class="sticky top-0 z-50 w-full bg-nav-blue shadow-lg">
+<header class="sticky top-0 z-50 w-full bg-nav-blue shadow-lg print:hidden">
     <div class="mx-auto flex max-w-[1280px] items-center justify-between px-6 py-3">
         <div class="flex items-center gap-8">
             <div class="flex items-center gap-3">
-                <div class="flex size-10 items-center justify-center rounded-lg bg-white/10 text-white backdrop-blur-sm">
-                    <span class="material-symbols-outlined text-2xl">folder_managed</span>
-                </div>
-                <div>
-                    <h2 class="text-lg font-bold leading-tight text-white">SiArsip</h2>
-                    <p class="text-xs text-blue-200">Navigasi Tanjungpinang</p>
-                </div>
+                <div class="flex size-10 items-center justify-center rounded-lg bg-white/10 text-white"><span class="material-symbols-outlined text-2xl">folder_managed</span></div>
+                <div><h2 class="text-lg font-bold leading-tight text-white">SIAD</h2><p class="text-xs text-blue-200">Navigasi Tanjungpinang</p></div>
             </div>
-            
             <nav class="hidden items-center gap-1 md:flex">
-                <a class="rounded-lg px-3 py-2 text-sm font-medium text-blue-100 hover:bg-white/10 hover:text-white transition-colors <?= (url_is('staf/dashboard')) ? 'bg-white/20 text-white shadow-sm' : '' ?>" href="<?= base_url('staf/dashboard') ?>">Dashboard</a>
-                <a class="rounded-lg px-3 py-2 text-sm font-medium text-blue-100 hover:bg-white/10 hover:text-white transition-colors <?= (url_is('staf/arsip-masuk')) ? 'bg-white/20 text-white shadow-sm' : '' ?>" href="<?= base_url('staf/arsip-masuk') ?>">Arsip Masuk</a>
-                <a class="rounded-lg px-3 py-2 text-sm font-medium text-blue-100 hover:bg-white/10 hover:text-white transition-colors <?= (url_is('staf/arsip-keluar')) ? 'bg-white/20 text-white shadow-sm' : '' ?>" href="<?= base_url('staf/arsip-keluar') ?>">Arsip Keluar</a>
-                <a class="rounded-lg px-3 py-2 text-sm font-medium text-blue-100 hover:bg-white/10 hover:text-white transition-colors <?= (url_is('staf/nota-dinas')) ? 'bg-white/20 text-white shadow-sm' : '' ?>" href="<?= base_url('staf/nota-dinas') ?>">Nota Dinas</a>
-                <a class="rounded-lg px-3 py-2 text-sm font-medium text-blue-100 hover:bg-white/10 hover:text-white transition-colors <?= (url_is('staf/laporan')) ? 'bg-white/20 text-white shadow-sm' : '' ?>" href="<?= base_url('staf/laporan') ?>">Laporan</a>
+                <a class="rounded-lg px-3 py-2 text-sm font-medium text-blue-100 hover:bg-white/10 hover:text-white transition-colors" href="<?= base_url('staf/dashboard') ?>">Dashboard</a>
+                <a class="rounded-lg px-3 py-2 text-sm font-medium text-blue-100 hover:bg-white/10 hover:text-white transition-colors" href="<?= base_url('staf/arsip-masuk') ?>">Arsip Masuk</a>
+                <a class="rounded-lg px-3 py-2 text-sm font-medium text-blue-100 hover:bg-white/10 hover:text-white transition-colors" href="<?= base_url('staf/arsip-keluar') ?>">Arsip Keluar</a>
+                <a class="rounded-lg bg-white/20 px-3 py-2 text-sm font-medium text-white shadow-sm" href="<?= base_url('staf/laporan') ?>">Laporan</a>
             </nav>
         </div>
-        
         <div class="flex items-center gap-4">
             <div class="hidden w-64 md:block">
                 <div class="relative flex items-center">
@@ -72,177 +60,116 @@
             </div>
         </div>
     </div>
+    </div>
 </header>
 
-<main class="flex-1 overflow-x-hidden px-4 py-8 md:px-8">
+<main class="flex-1 px-4 py-8 md:px-8">
     <div class="mx-auto max-w-[1280px]">
-        <div class="mb-8">
-            <nav class="mb-4 flex items-center text-sm text-slate-500 dark:text-slate-400">
-                <a class="hover:text-primary" href="<?= base_url('staf/dashboard') ?>">Dashboard</a>
-                <span class="mx-2 material-symbols-outlined text-[16px]">chevron_right</span>
-                <span class="font-medium text-slate-900 dark:text-slate-100">Laporan & Analitik</span>
-            </nav>
-            <h1 class="text-3xl font-black tracking-tight text-slate-900 dark:text-white md:text-4xl">Laporan & Statistik Arsip</h1>
-            <p class="mt-2 text-lg text-slate-500 dark:text-slate-400">Buat laporan aktivitas, ringkasan arsip, dan ekspor data.</p>
-        </div>
-
-        <div class="grid grid-cols-1 gap-8 lg:grid-cols-12">
-            
-            <div class="lg:col-span-4">
-                <div class="rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                    <div class="border-b border-slate-100 px-6 py-4 dark:border-slate-800">
-                        <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                            <span class="material-symbols-outlined text-primary">tune</span> Konfigurasi Laporan
-                        </h3>
-                    </div>
-                    <form method="GET" action="" class="p-6 space-y-6">
-                        <div class="space-y-3">
-                            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">Jenis Laporan</label>
-                            <div class="grid gap-3">
-                                <label class="relative flex cursor-pointer rounded-lg border border-primary bg-primary/5 p-4 ring-1 ring-primary">
-                                    <input checked class="sr-only" name="report-type" type="radio" value="inventory"/>
-                                    <span class="flex flex-1 flex-col">
-                                        <span class="block text-sm font-medium text-slate-900 dark:text-white">Inventaris Keseluruhan</span>
-                                        <span class="mt-1 flex items-center text-xs text-slate-500 dark:text-slate-400">Seluruh jenis arsip di sistem</span>
-                                    </span>
-                                    <span class="material-symbols-outlined text-primary">check_circle</span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="space-y-3">
-                            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">Rentang Waktu</label>
-                            <div class="grid grid-cols-2 gap-2">
-                                <div>
-                                    <label class="text-xs text-slate-500 mb-1 block">Dari</label>
-                                    <input name="start_date" value="<?= esc($start_date) ?>" class="block w-full rounded-lg border-slate-200 text-sm focus:border-primary focus:ring-primary" type="date"/>
-                                </div>
-                                <div>
-                                    <label class="text-xs text-slate-500 mb-1 block">Sampai</label>
-                                    <input name="end_date" value="<?= esc($end_date) ?>" class="block w-full rounded-lg border-slate-200 text-sm focus:border-primary focus:ring-primary" type="date"/>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="pt-4 border-t border-slate-100 flex gap-3">
-                            <button type="submit" class="flex-1 flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-white hover:bg-primary/90 shadow-md shadow-primary/20 transition-all">
-                                <span class="material-symbols-outlined text-[20px]">preview</span> Terapkan Filter
-                            </button>
-                        </div>
-                    </form>
-                </div>
+        
+        <div class="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-end print:hidden">
+            <div>
+                <h1 class="text-3xl font-black tracking-tight text-slate-900 md:text-4xl">Laporan Arsip</h1>
+                <p class="mt-2 text-lg text-slate-500">Filter dan cetak laporan dokumen arsip Navigasi Tanjungpinang.</p>
             </div>
-
-            <div class="lg:col-span-8 space-y-6">
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div class="rounded-xl bg-white p-5 shadow-sm border border-slate-200 dark:bg-slate-900 dark:border-slate-800">
-                        <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Total Arsip Tersaring</p>
-                        <p class="mt-2 text-3xl font-bold text-slate-900 dark:text-white"><?= number_format($total_arsip) ?></p>
-                        <div class="mt-2 flex items-center text-xs text-slate-500">
-                            <span class="material-symbols-outlined text-sm mr-1">folder</span> Dokumen tercatat
-                        </div>
-                    </div>
-                    <div class="rounded-xl bg-white p-5 shadow-sm border border-slate-200 dark:bg-slate-900 dark:border-slate-800">
-                        <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Arsip Digital</p>
-                        <p class="mt-2 text-3xl font-bold text-slate-900 dark:text-white"><?= number_format($arsip_digital) ?></p>
-                        <div class="mt-2 flex items-center text-xs text-green-600">
-                            <span class="material-symbols-outlined text-sm mr-1">cloud_done</span> <?= $persen_digital ?>% terdigitalisasi
-                        </div>
-                    </div>
-                    <div class="rounded-xl bg-white p-5 shadow-sm border border-slate-200 dark:bg-slate-900 dark:border-slate-800">
-                        <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Kapasitas Penyimpanan</p>
-                        <p class="mt-2 text-3xl font-bold text-slate-900 dark:text-white">85%</p> <div class="mt-2 flex items-center text-xs text-orange-600 dark:text-orange-400">
-                            <span class="material-symbols-outlined text-sm mr-1">warning</span> Hampir Penuh
-                        </div>
-                    </div>
-                </div>
-
-                <div class="rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                    <div class="flex items-center justify-between border-b border-slate-100 px-6 py-4 dark:border-slate-800">
-                        <div class="flex items-center gap-3">
-                            <h3 class="text-lg font-bold text-slate-900 dark:text-white">Preview Laporan</h3>
-                            <span class="rounded bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-600">Inventaris Lokasi</span>
-                        </div>
-                        <div class="flex gap-2">
-                            <button onclick="window.print()" class="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50">
-                                <span class="material-symbols-outlined text-[18px] text-red-500">picture_as_pdf</span> Cetak PDF
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-sm">
-                            <thead class="bg-slate-50 text-slate-500 dark:bg-slate-800/50 dark:text-slate-400">
-                                <tr>
-                                    <th class="px-6 py-3 font-medium">No. Dokumen</th>
-                                    <th class="px-6 py-3 font-medium">Perihal & Jenis</th>
-                                    <th class="px-6 py-3 font-medium">Tanggal</th>
-                                    <th class="px-6 py-3 font-medium">Lokasi Fisik</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
-                                <?php if(empty($arsip)): ?>
-                                    <tr>
-                                        <td colspan="4" class="px-6 py-8 text-center text-slate-500">Tidak ada data untuk rentang waktu tersebut.</td>
-                                    </tr>
-                                <?php else: ?>
-                                    <?php foreach($arsip as $a): ?>
-                                    <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/50">
-                                        <td class="whitespace-nowrap px-6 py-4 font-medium text-slate-900 dark:text-white">
-                                            <?= esc($a['nomor_surat']) ?>
-                                        </td>
-                                        <td class="px-6 py-4 text-slate-600 dark:text-slate-300">
-                                            <p class="truncate w-48 font-medium text-slate-900"><?= esc($a['perihal']) ?></p>
-                                            <span class="text-xs text-blue-600 bg-blue-50 px-2 py-0.5 rounded mt-1 inline-block"><?= esc($a['jenis_arsip']) ?></span>
-                                        </td>
-                                        <td class="whitespace-nowrap px-6 py-4 text-slate-500">
-                                            <?= date('d M Y', strtotime($a['tanggal_surat'])) ?>
-                                        </td>
-                                        <td class="px-6 py-4 text-slate-500">
-                                            <div class="flex items-center gap-1.5">
-                                                <span class="material-symbols-outlined text-[16px]">shelves</span>
-                                                <?= esc($a['nama_lemari'] ?? '-') ?>, <?= esc($a['nama_rak'] ?? '-') ?>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <?php endforeach; ?>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                    
-                    <div class="flex items-center justify-between border-t border-slate-100 px-6 py-4 dark:border-slate-800">
-                        <p class="text-sm text-slate-500 dark:text-slate-400">Navigasi Halaman Laporan</p>
-                        <div class="flex gap-2">
-                            <?= $pager->links('arsip', 'default_full') ?>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                    <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                        <h3 class="text-base font-bold text-slate-900 dark:text-white mb-4">Distribusi per Divisi</h3>
-                        <div class="flex items-center justify-center h-48 bg-slate-50 rounded-lg dark:bg-slate-800/50">
-                            <div class="flex items-end gap-3 h-32">
-                                <div class="w-8 bg-blue-500 rounded-t-sm h-[60%]"></div>
-                                <div class="w-8 bg-purple-500 rounded-t-sm h-[80%]"></div>
-                                <div class="w-8 bg-teal-500 rounded-t-sm h-[40%]"></div>
-                                <div class="w-8 bg-orange-500 rounded-t-sm h-[55%]"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                        <h3 class="text-base font-bold text-slate-900 dark:text-white mb-4">Tren Arsip Masuk</h3>
-                        <div class="flex items-center justify-center h-48 bg-slate-50 rounded-lg dark:bg-slate-800/50 relative overflow-hidden">
-                            <svg class="w-full h-full text-primary" preserveAspectRatio="none" viewBox="0 0 100 50">
-                                <path d="M0 40 Q 10 35, 20 38 T 40 25 T 60 30 T 80 15 T 100 20" fill="none" stroke="currentColor" stroke-width="2"></path>
-                                <path d="M0 40 Q 10 35, 20 38 T 40 25 T 60 30 T 80 15 T 100 20 V 50 H 0 Z" fill="currentColor" fill-opacity="0.1" stroke="none"></path>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
+            <div class="flex gap-3">
+                <button onclick="window.print()" class="flex items-center gap-2 rounded-lg bg-green-600 px-4 py-2 text-sm font-bold text-white shadow-md hover:bg-green-700 transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">print</span> Cetak Laporan (PDF)
+                </button>
             </div>
         </div>
+
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-6 print:hidden">
+            <form action="<?= base_url('staf/laporan') ?>" method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Dari Tanggal</label>
+                    <input type="date" name="start_date" value="<?= esc($start_date) ?>" class="w-full rounded-lg border-slate-300 focus:ring-primary focus:border-primary text-sm">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Sampai Tanggal</label>
+                    <input type="date" name="end_date" value="<?= esc($end_date) ?>" class="w-full rounded-lg border-slate-300 focus:ring-primary focus:border-primary text-sm">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Jenis Arsip</label>
+                    <select name="jenis_arsip" class="w-full rounded-lg border-slate-300 focus:ring-primary focus:border-primary text-sm">
+                        <option value="">-- Semua Jenis --</option>
+                        <option value="Surat Masuk" <?= ($jenis_arsip == 'Surat Masuk') ? 'selected' : '' ?>>Surat Masuk</option>
+                        <option value="Surat Keluar" <?= ($jenis_arsip == 'Surat Keluar') ? 'selected' : '' ?>>Surat Keluar</option>
+                        <option value="Nota Dinas" <?= ($jenis_arsip == 'Nota Dinas') ? 'selected' : '' ?>>Nota Dinas</option>
+                    </select>
+                </div>
+                <div class="flex gap-2">
+                    <button type="submit" class="flex-1 bg-primary text-white font-bold rounded-lg py-2 hover:bg-blue-700 transition-colors">Terapkan Filter</button>
+                    <a href="<?= base_url('staf/laporan') ?>" class="px-4 py-2 bg-slate-100 text-slate-600 font-bold rounded-lg hover:bg-slate-200 transition-colors text-center" title="Reset Filter"><span class="material-symbols-outlined mt-0.5 text-[20px]">refresh</span></a>
+                </div>
+            </form>
+        </div>
+
+        <div class="hidden print:block text-center mb-8 border-b-2 border-slate-800 pb-4">
+            <h1 class="text-2xl font-bold uppercase">Laporan Arsip Surat Navigasi</h1>
+            <p class="text-sm">
+                Periode: <?= $start_date ? date('d M Y', strtotime($start_date)) . ' s/d ' . date('d M Y', strtotime($end_date)) : 'Semua Waktu' ?><br>
+                Jenis Arsip: <?= $jenis_arsip ? esc($jenis_arsip) : 'Semua Jenis' ?>
+            </p>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden print:border-none print:shadow-none">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-sm">
+                    <thead class="bg-slate-50 print:bg-transparent border-b-2 border-slate-200 print:border-black">
+                        <tr>
+                            <th class="px-4 py-3 font-bold text-slate-700">No.</th>
+                            <th class="px-4 py-3 font-bold text-slate-700">Tanggal</th>
+                            <th class="px-4 py-3 font-bold text-slate-700">Nomor Surat</th>
+                            <th class="px-4 py-3 font-bold text-slate-700">Jenis</th>
+                            <th class="px-4 py-3 font-bold text-slate-700">Pengirim/Tujuan</th>
+                            <th class="px-4 py-3 font-bold text-slate-700">Perihal</th>
+                            <th class="px-4 py-3 font-bold text-slate-700">Lokasi Fisik</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 print:divide-slate-300">
+                        <?php if(empty($arsip)): ?>
+                            <tr><td colspan="7" class="px-4 py-8 text-center text-slate-500">Tidak ada data arsip yang sesuai dengan filter.</td></tr>
+                        <?php else: ?>
+                            <?php $no=1; foreach($arsip as $a): ?>
+                            <tr class="hover:bg-slate-50 transition-colors">
+                                <td class="px-4 py-3"><?= $no++ ?>.</td>
+                                <td class="px-4 py-3"><?= date('d/m/Y', strtotime($a['tanggal_surat'])) ?></td>
+                                <td class="px-4 py-3 font-medium text-primary print:text-black"><?= esc($a['nomor_surat']) ?></td>
+                                <td class="px-4 py-3"><?= esc($a['jenis_arsip']) ?></td>
+                                <td class="px-4 py-3"><?= esc($a['pengirim_tujuan']) ?></td>
+                                <td class="px-4 py-3 max-w-[200px] truncate print:whitespace-normal" title="<?= esc($a['perihal']) ?>"><?= esc($a['perihal']) ?></td>
+                                <td class="px-4 py-3 text-xs leading-relaxed">
+    <?php if(!empty($a['nama_rak'])): ?>
+        <span class="block text-slate-500 print:text-black"><?= esc($a['nama_gedung']) ?> - <?= esc($a['nama_ruangan']) ?></span>
+        <span class="font-bold text-primary print:text-black"><?= esc($a['nama_lemari']) ?> &raquo; <?= esc($a['nama_rak']) ?></span>
+    <?php else: ?>
+        <span class="text-slate-400 italic">Belum diatur</span>
+    <?php endif; ?>
+</td>
+                            </tr>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="hidden print:flex justify-end mt-12 pr-12">
+            <div class="text-center">
+                <p class="mb-16 text-sm">Tanjungpinang, <?= date('d M Y') ?><br>Petugas Tata Usaha,</p>
+                <p class="font-bold underline text-sm"><?= esc(session()->get('nama_lengkap') ?? 'Budi Santoso') ?></p>
+            </div>
+        </div>
+
     </div>
 </main>
+
+<style>
+    /* CSS Khusus Print agar halamannya rapi saat di PDF kan */
+    @media print {
+        @page { size: landscape; margin: 1.5cm; }
+        body { background: white; -webkit-print-color-adjust: exact; }
+    }
+</style>
 </body>
 </html>

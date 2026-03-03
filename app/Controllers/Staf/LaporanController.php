@@ -3,51 +3,51 @@
 namespace App\Controllers\Staf;
 
 use App\Controllers\BaseController;
-use App\Models\ArsipModel;
 
 class LaporanController extends BaseController
 {
     public function index()
     {
-        $model = new ArsipModel();
-
-        // Tangkap input filter tanggal
-        $startDate = $this->request->getGet('start_date');
-        $endDate   = $this->request->getGet('end_date');
-
-        // --- MENGHITUNG STATISTIK KARTU ATAS ---
         $db = \Config\Database::connect();
-        $builderStat = $db->table('data_arsip');
+        $builder = $db->table('data_arsip');
         
-        // Jika ada filter tanggal, terapkan ke statistik
-        if ($startDate && $endDate) {
-            $builderStat->where('tanggal_surat >=', $startDate)
-                        ->where('tanggal_surat <=', $endDate);
+        // Relasi ke Klasifikasi dan Hierarki Lokasi (Rak -> Lemari -> Ruangan -> Gedung)
+        $builder->select('data_arsip.*, master_klasifikasi.kode_klasifikasi, 
+                          master_rak.nama_rak, master_lemari.nama_lemari, 
+                          master_ruangan.nama_ruangan, master_gedung.nama_gedung');
+        
+        $builder->join('master_klasifikasi', 'master_klasifikasi.id_klasifikasi = data_arsip.id_klasifikasi', 'left');
+        
+        // JOIN Berantai untuk Lokasi
+        $builder->join('master_rak', 'master_rak.id_rak = data_arsip.id_rak', 'left');
+        $builder->join('master_lemari', 'master_lemari.id_lemari = master_rak.id_lemari', 'left');
+        $builder->join('master_ruangan', 'master_ruangan.id_ruangan = master_lemari.id_ruangan', 'left');
+        $builder->join('master_gedung', 'master_gedung.id_gedung = master_ruangan.id_gedung', 'left');
+
+        // 1. Tangkap Request Filter dari View
+        $start_date  = $this->request->getGet('start_date');
+        $end_date    = $this->request->getGet('end_date');
+        $jenis_arsip = $this->request->getGet('jenis_arsip');
+
+        // 2. Terapkan Filter jika diisi
+        if (!empty($start_date) && !empty($end_date)) {
+            $builder->where('tanggal_surat >=', $start_date);
+            $builder->where('tanggal_surat <=', $end_date);
         }
         
-        $totalArsip = $builderStat->countAllResults(false); // Hitung total
-        $arsipDigital = $builderStat->where('file_scan IS NOT NULL')->countAllResults(); // Hitung yg ada file digitalnya
-        $persenDigital = ($totalArsip > 0) ? round(($arsipDigital / $totalArsip) * 100) : 0;
-
-        // --- MENGAMBIL DATA UNTUK TABEL PREVIEW ---
-        $model->select('data_arsip.*, master_lemari.nama_lemari, master_rak.nama_rak')
-              ->join('master_rak', 'master_rak.id_rak = data_arsip.id_rak', 'left')
-              ->join('master_lemari', 'master_lemari.id_lemari = master_rak.id_lemari', 'left');
-
-        if ($startDate && $endDate) {
-            $model->where('tanggal_surat >=', $startDate)
-                  ->where('tanggal_surat <=', $endDate);
+        if (!empty($jenis_arsip)) {
+            $builder->where('jenis_arsip', $jenis_arsip);
         }
+
+        $builder->orderBy('tanggal_surat', 'DESC');
+        $arsip = $builder->get()->getResultArray();
 
         $data = [
-            'title' => 'Laporan & Statistik',
-            'arsip' => $model->orderBy('data_arsip.created_at', 'DESC')->paginate(10, 'arsip'),
-            'pager' => $model->pager,
-            'total_arsip'   => $totalArsip,
-            'arsip_digital' => $arsipDigital,
-            'persen_digital'=> $persenDigital,
-            'start_date'    => $startDate,
-            'end_date'      => $endDate
+            'title'       => 'Laporan Arsip',
+            'arsip'       => $arsip,
+            'start_date'  => $start_date,
+            'end_date'    => $end_date,
+            'jenis_arsip' => $jenis_arsip
         ];
 
         return view('staf/laporan/index_view', $data);

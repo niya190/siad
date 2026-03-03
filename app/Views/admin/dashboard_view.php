@@ -61,10 +61,7 @@
 </div>
 </div>
 <div class="h-8 w-px bg-slate-200 dark:bg-slate-700 mx-2 hidden md:block"></div>
-<nav class="hidden md:flex items-center gap-1">
-    <a class="px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800 rounded-md transition-colors cursor-pointer" onclick="alert('Pusat Bantuan sedang dalam perbaikan.')">Help Center</a>
-    <a class="px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800 rounded-md transition-colors cursor-pointer" onclick="alert('Dokumentasi Sistem v1.0 segera dirilis.')">Documentation</a>
-</nav>
+
 </div>
 <div class="flex items-center gap-4">
 <form action="<?= base_url('admin/arsip/search') ?>" method="GET" class="relative hidden sm:block">

@@ -119,8 +119,7 @@
                 <span class="text-sm">User Management</span>
             </a>
             <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-primary dark:hover:text-white transition-colors group" 
-   href="<?= base_url('admin/settings') ?>">
-    <span class="material-symbols-outlined group-hover:text-primary dark:group-hover:text-blue-400 transition-colors">settings_applications</span>
+   href="<?= base_url('admin/settings') ?>">  <span class="material-symbols-outlined group-hover:text-primary dark:group-hover:text-blue-400 transition-colors">settings_applications</span>
     <span class="text-sm font-medium">System Settings</span>
 </a>
         </nav>
@@ -152,10 +151,9 @@
                         <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Staff & Administrators</h2>
                     </div>
                     <div class="flex gap-3">
-                        <button class="flex items-center gap-2 bg-primary hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow-md shadow-blue-500/20 transition-all font-medium text-sm">
-                            <span class="material-symbols-outlined text-lg">person_add</span>
-                            Add New User
-                        </button>
+                        <a href="<?= base_url('admin/user/create') ?>" class="bg-primary hover:bg-primary/90 text-white rounded-lg py-2.5 px-4 text-sm font-bold transition-all shadow-sm flex items-center justify-center gap-2 w-fit cursor-pointer">
+    <span class="material-symbols-outlined text-sm">add</span> Add New Staff
+</a>
                     </div>
                 </div>
 

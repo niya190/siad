@@ -56,10 +56,7 @@
             </div>
         </div>
         <div class="h-8 w-px bg-slate-200 dark:bg-slate-700 mx-2 hidden md:block"></div>
-        <nav class="hidden md:flex items-center gap-1">
-            <a class="px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800 rounded-md transition-colors" href="#">Help Center</a>
-            <a class="px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800 rounded-md transition-colors" href="#">Documentation</a>
-        </nav>
+        
     </div>
     <div class="flex items-center gap-4">
         <div class="relative hidden sm:block">
@@ -129,10 +126,10 @@
                 <span class="material-symbols-outlined group-hover:text-primary dark:group-hover:text-blue-400 transition-colors">people</span>
                 <span class="text-sm font-medium">User Management</span>
             </a>
-            <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-primary dark:hover:text-white transition-colors group" href="#">
-                <span class="material-symbols-outlined group-hover:text-primary dark:group-hover:text-blue-400 transition-colors">settings_applications</span>
-                <span class="text-sm font-medium">System Settings</span>
-            </a>
+           <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-primary dark:hover:text-white transition-colors group" 
+   href="<?= base_url('admin/settings') ?>">  <span class="material-symbols-outlined group-hover:text-primary dark:group-hover:text-blue-400 transition-colors">settings_applications</span>
+    <span class="text-sm font-medium">System Settings</span>
+</a>
         </nav>
         <div class="p-4 border-t border-slate-200 dark:border-slate-800">
             <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3">
