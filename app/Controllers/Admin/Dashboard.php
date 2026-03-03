@@ -25,13 +25,19 @@ class Dashboard extends BaseController
                                      ->orderBy('tanggal_terima', 'DESC')
                                      ->findAll(5);
 
+         // KODE PENGGANTINYA: Menggunakan $arsipModel yang sudah ada
+        $aktivitas = $arsipModel->select('data_arsip.id_arsip, data_arsip.nomor_surat, data_arsip.jenis_arsip, data_arsip.created_at, users.nama_lengkap')
+                                ->join('users', 'users.id_user = data_arsip.id_petugas', 'left')
+                                ->orderBy('data_arsip.created_at', 'DESC')
+                                ->findAll(5);
         // Siapkan data untuk dikirim ke View
         $data = [
             'title'            => 'Dashboard Admin',
             'total_archives'   => $totalArchives,
             'new_entries'      => $newEntries,
             'expiring_records' => 0, // Ini bisa kita kembangkan nanti jika ada fitur retensi usia arsip
-            'recent_archives'  => $recentArchives
+            'recent_archives'  => $recentArchives,
+            'aktivitas' => $aktivitas
         ];
 
         return view('admin/dashboard_view', $data);

@@ -7,16 +7,14 @@ use CodeIgniter\Router\RouteCollection;
  */
 
 // Menampilkan halaman form login
+// Authentication Routes
 $routes->get('/', 'Login::index');
 $routes->get('login', 'Login::index');
 $routes->post('login/auth', 'Login::auth');
 $routes->get('login/logout', 'Login::logout');
 
-$routes->get('register', 'Login::register');
-$routes->post('register/process', 'Login::registerProcess');
-
 $routes->get('forgot-password', 'Login::forgotPassword');
-$routes->post('forgot-password/process', 'Login::forgotPasswordProcess');
+$routes->post('forgot-password/process', 'Login::processForgotPassword');
 // Dashboard Pusat
 $routes->get('/dashboard', 'Dashboard::index', ['filter' => 'auth']);
 

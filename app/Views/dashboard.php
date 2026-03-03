@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - EDUSYS FTTK</title>
+    <title>Dashboard - SIAD</title>
     <style>
         body { font-family: sans-serif; padding: 2rem; }
         .container { max-width: 1000px; margin: 0 auto; background: #fff; border: 1px solid #ccc; padding: 1.5rem; border-radius: 8px; }

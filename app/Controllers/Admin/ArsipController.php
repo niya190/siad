@@ -200,4 +200,39 @@ class ArsipController extends BaseController
         
         return redirect()->back()->with('error', 'Format PDF membutuhkan library tambahan. Silakan gunakan format Excel (CSV).');
     }
+    // ====================================================================
+    // FITUR DETAIL ARSIP
+    // ====================================================================
+    public function detail($id)
+    {
+        $arsipModel = new \App\Models\ArsipModel();
+        
+        // Gunakan query builder untuk mengambil detail lengkap beserta relasinya
+        $builder = $arsipModel->builder();
+        $builder->select('data_arsip.*, master_klasifikasi.kode_klasifikasi, master_klasifikasi.nama_klasifikasi, 
+                          master_rak.nama_rak, master_lemari.nama_lemari, master_ruangan.nama_ruangan, 
+                          master_gedung.nama_gedung, users.nama_lengkap as nama_petugas');
+        $builder->join('master_klasifikasi', 'master_klasifikasi.id_klasifikasi = data_arsip.id_klasifikasi', 'left');
+        $builder->join('master_rak', 'master_rak.id_rak = data_arsip.id_rak', 'left');
+        $builder->join('master_lemari', 'master_lemari.id_lemari = master_rak.id_lemari', 'left');
+        $builder->join('master_ruangan', 'master_ruangan.id_ruangan = master_lemari.id_ruangan', 'left');
+        $builder->join('master_gedung', 'master_gedung.id_gedung = master_ruangan.id_gedung', 'left');
+        $builder->join('users', 'users.id_user = data_arsip.id_petugas', 'left');
+        $builder->where('data_arsip.id_arsip', $id);
+        
+        $arsip = $builder->get()->getRowArray();
+
+        // Jika ID arsip tidak ada di database, kembalikan ke halaman pencarian
+        if (!$arsip) {
+            return redirect()->to(base_url('admin/arsip/search'))->with('error', 'Data arsip tidak ditemukan.');
+        }
+
+        $data = [
+            'title' => 'Detail Arsip',
+            'arsip' => $arsip
+        ];
+
+        // Tampilkan ke view
+        return view('admin/arsip/detail_view', $data);
+    }
 }

@@ -7,87 +7,76 @@ use App\Models\UserModel;
 class Login extends BaseController
 {
     // =====================================
-    // HALAMAN LOGIN
+    // MENAMPILKAN HALAMAN LOGIN
     // =====================================
     public function index()
     {
-        // Jika sudah login, langsung tendang ke dashboard masing-masing
-        if (session()->get('logged_in')) {
-            return session()->get('role') === 'admin' ? redirect()->to('/admin/dashboard') : redirect()->to('/staf/dashboard');
+        // Cek jika sudah login, arahkan ke dashboard yang sesuai
+        if (session()->get('isLoggedIn')) {
+            return session()->get('role') === 'admin' 
+                ? redirect()->to('/admin/dashboard') 
+                : redirect()->to('/staf/dashboard');
         }
+
         return view('login');
     }
 
+    // =====================================
+    // PROSES OTENTIKASI LOGIN
+    // =====================================
     public function auth()
     {
         $session = session();
         $userModel = new UserModel();
         
+        // Ambil inputan dari form
         $login_id = $this->request->getPost('login_id'); // Bisa NIP, Username, atau Email
         $password = $this->request->getPost('password');
         
-        // Cari user berdasarkan Username ATAU Email ATAU NIP
+        // 1. Cari user berdasarkan NIP, Username, ATAU Email
         $user = $userModel->groupStart()
-                          ->where('username', $login_id)
+                          ->where('nip', $login_id)
+                          ->orWhere('username', $login_id)
                           ->orWhere('email', $login_id)
-                          ->orWhere('nip', $login_id)
                           ->groupEnd()
                           ->first();
                           
         if ($user) {
-            if ($user['status'] == 'suspended') {
-                return redirect()->to('/')->with('error', 'Akun Anda ditangguhkan! Hubungi Admin.');
+            // 2. Cek apakah akun ditangguhkan (Suspended)
+            if ($user['status'] === 'suspended') {
+                return redirect()->back()->with('error', 'Akun Anda ditangguhkan! Silakan hubungi Administrator.');
             }
 
-            // Cek Password (Bisa baca Hash BCRYPT ataupun teks biasa bawaan dummy lama)
+            // 3. Verifikasi Password (Mendukung Hash BCRYPT dan teks biasa)
             if (password_verify($password, $user['password_hash']) || $password == $user['password_hash']) {
+                
+                // 4. Update waktu login terakhir
+                $userModel->update($user['id_user'], [
+                    'last_login' => date('Y-m-d H:i:s')
+                ]);
+
+                // 5. Simpan data ke Session
                 $session->set([
                     'id_user'      => $user['id_user'],
+                    'nip'          => $user['nip'],
                     'username'     => $user['username'],
                     'nama_lengkap' => $user['nama_lengkap'],
+                    'email'        => $user['email'],
                     'role'         => $user['role'],
-                    'logged_in'    => TRUE
+                    'isLoggedIn'   => TRUE
                 ]);
                 
-                return $user['role'] === 'admin' ? redirect()->to('/admin/dashboard') : redirect()->to('/staf/dashboard');
+                // 6. Arahkan ke Dashboard
+                return $user['role'] === 'admin' 
+                    ? redirect()->to('/admin/dashboard') 
+                    : redirect()->to('/staf/dashboard');
+
             } else {
-                return redirect()->to('/')->with('error', 'Password yang Anda masukkan salah.');
+                return redirect()->back()->with('error', 'Password yang Anda masukkan salah.');
             }
         } else {
-            return redirect()->to('/')->with('error', 'Akun tidak ditemukan. Silakan daftar terlebih dahulu.');
+            return redirect()->back()->with('error', 'Akun tidak ditemukan. Periksa kembali NIP, Username, atau Email Anda.');
         }
-    }
-
-    // =====================================
-    // HALAMAN REGISTER
-    // =====================================
-    public function register()
-    {
-        return view('register');
-    }
-
-    public function registerProcess()
-    {
-        $userModel = new UserModel();
-
-        // Validasi agar Username, Email, atau NIP tidak kembar
-        $cek = $userModel->where('username', $this->request->getPost('username'))
-                         ->orWhere('email', $this->request->getPost('email'))
-                         ->orWhere('nip', $this->request->getPost('nip'))->first();
-                         
-        if ($cek) return redirect()->back()->with('error', 'NIP, Username, atau Email sudah terdaftar!');
-
-        $userModel->save([
-            'nama_lengkap'  => $this->request->getPost('nama_lengkap'),
-            'nip'           => $this->request->getPost('nip'),
-            'username'      => $this->request->getPost('username'),
-            'email'         => $this->request->getPost('email'),
-            'password_hash' => password_hash($this->request->getPost('password'), PASSWORD_BCRYPT),
-            'role'          => 'staff', // Default yang mendaftar adalah staff
-            'status'        => 'active'
-        ]);
-
-        return redirect()->to('/')->with('success', 'Akun berhasil dibuat! Silakan login.');
     }
 
     // =====================================
@@ -98,25 +87,32 @@ class Login extends BaseController
         return view('forgot_password');
     }
 
-    public function forgotPasswordProcess()
+    // =====================================
+    // PROSES FORGOT PASSWORD
+    // =====================================
+    public function processForgotPassword()
     {
         $email = $this->request->getPost('email');
         $userModel = new UserModel();
         
-        if ($userModel->where('email', $email)->first()) {
-            // Simulasi Pengiriman Email (karena di localhost biasanya belum setting SMTP)
-            return redirect()->to('/')->with('success', 'Instruksi reset password telah dikirim ke email: ' . $email . ' (Simulasi)');
+        // Cari user berdasarkan email
+        $user = $userModel->where('email', $email)->first();
+
+        if ($user) {
+            // Logika idealnya: Generate token unik, simpan ke database, lalu kirim email.
+            // Di sini kita gunakan simulasi pesan sukses karena ini lingkungan lokal (development)
+            return redirect()->to('/')->with('success', 'Instruksi pemulihan password telah dikirim ke ' . $email . '. (SIMULASI: Hubungi Admin untuk reset manual)');
         } else {
-            return redirect()->back()->with('error', 'Email tidak terdaftar di sistem kami.');
+            return redirect()->back()->with('error', 'Alamat email tidak terdaftar di sistem kami.');
         }
     }
 
     // =====================================
-    // LOGOUT
+    // PROSES LOGOUT
     // =====================================
     public function logout()
     {
         session()->destroy();
-        return redirect()->to('/');
+        return redirect()->to('/')->with('success', 'Anda telah berhasil keluar dari sistem.');
     }
 }

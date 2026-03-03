@@ -59,10 +59,53 @@
             <input class="pl-9 pr-4 py-1.5 text-sm bg-slate-100 dark:bg-slate-800 border-none rounded-full w-64 focus:ring-2 focus:ring-primary/20 placeholder-slate-400 text-slate-700 dark:text-slate-200" placeholder="Global search..." type="text"/>
         </div>
 
-        <a href="<?= base_url('admin/notifications') ?>" class="relative p-2 rounded-full text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer">
-    <span class="material-symbols-outlined">notifications</span>
-    <span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-surface-dark"></span>
-</a>
+        <div class="relative">
+            <button onclick="document.getElementById('adminNotifDropdown').classList.toggle('hidden')" class="relative p-2 rounded-full text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-none">
+                <span class="material-symbols-outlined">notifications</span>
+                <span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-surface-dark animate-pulse"></span>
+            </button>
+            
+            <div id="adminNotifDropdown" class="absolute right-0 mt-2 w-80 bg-white dark:bg-surface-dark rounded-xl shadow-2xl border border-slate-200 dark:border-slate-700 hidden z-50 overflow-hidden">
+                
+                <div class="p-3 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-800/50">
+                    <h3 class="font-bold text-sm text-slate-800 dark:text-white">Notifikasi Sistem</h3>
+                    <button onclick="document.getElementById('adminNotifDropdown').classList.add('hidden')" class="text-slate-400 hover:text-red-500 dark:hover:text-red-400 transition-colors bg-transparent border-none">
+                        <span class="material-symbols-outlined text-[16px] block">close</span>
+                    </button>
+                </div>
+                
+                <div class="max-h-64 overflow-y-auto">
+                    <?php if(empty($aktivitas)): ?>
+                        <div class="p-6 text-center text-sm text-slate-500">Belum ada aktivitas.</div>
+                    <?php else: ?>
+                        
+                        <?php foreach($aktivitas as $notif): ?>
+                        
+                        <a href="<?= base_url('admin/arsip/detail/' . $notif['id_arsip']) ?>" class="flex gap-3 p-4 border-b border-slate-50 dark:border-slate-800/50 hover:bg-blue-50 dark:hover:bg-slate-800 transition-colors group">
+                            <div class="flex-shrink-0 mt-1">
+                                <div class="size-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform">
+                                    <span class="material-symbols-outlined text-[16px]">task</span>
+                                </div>
+                            </div>
+                            <div>
+                                <p class="text-sm font-bold text-slate-800 dark:text-slate-200 leading-tight">Arsip Baru: <?= esc($notif['jenis_arsip']) ?></p>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-snug">
+                                    Oleh <span class="font-semibold"><?= esc($notif['nama_lengkap'] ?? 'Sistem') ?></span> (<?= esc($notif['nomor_surat']) ?>)
+                                </p>
+                                <p class="text-[10px] text-slate-400 mt-1 font-semibold"><?= date('d M Y, H:i', strtotime($notif['created_at'])) ?></p>
+                            </div>
+                        </a>
+                        
+                        <?php endforeach; ?>
+                        <?php endif; ?>
+                </div>
+                
+                <div class="p-2 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-100 dark:border-slate-800 text-center">
+                    <a href="<?= base_url('admin/notifications') ?>" class="text-xs font-bold text-primary dark:text-blue-400 hover:underline">Lihat Semua Log</a>
+                </div>
+
+            </div>
+        </div>
 
         <div class="flex items-center gap-3 pl-4 border-l border-slate-200 dark:border-slate-700">
             <div class="text-right hidden sm:block">
