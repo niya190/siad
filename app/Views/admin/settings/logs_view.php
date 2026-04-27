@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title><?= $title ?> - Admin SiArsip</title>
+    <title><?= $title ?> - Admin SIAD</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
@@ -22,7 +22,7 @@
             <h1 class="text-2xl font-bold text-white flex items-center gap-3">
                 <span class="material-symbols-outlined text-green-400">terminal</span> SERVER LOGS [CI4]
             </h1>
-            <p class="text-xs text-slate-400 mt-1">C:\SiArsip\writable\logs\ >_ Tail -f system.log</p>
+            <p class="text-xs text-slate-400 mt-1">C:\SIAD\writable\logs\ >_ Tail -f system.log</p>
         </div>
         <a href="<?= base_url('admin/settings') ?>" class="px-4 py-2 bg-slate-800 text-white border border-slate-600 rounded hover:bg-slate-700 transition-colors text-sm font-bold flex items-center gap-2">
             <span class="material-symbols-outlined text-[18px]">close</span> TUTUP TERMINAL
@@ -53,7 +53,7 @@
                         <?php endforeach; ?>
                     </div>
                 <?php endforeach; ?>
-                <div class="text-green-500 font-bold mt-4 animate-pulse">admin@siarsip:~$ _</div>
+                <div class="text-green-500 font-bold mt-4 animate-pulse">admin@siad:~$ _</div>
             <?php endif; ?>
 
         </div>

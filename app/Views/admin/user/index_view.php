@@ -44,9 +44,11 @@
 <header class="h-16 bg-white dark:bg-surface-dark border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-6 z-20 shadow-sm flex-shrink-0">
     <div class="flex items-center gap-4">
         <div class="flex items-center gap-3">
-            <div class="size-10 rounded-lg bg-primary flex items-center justify-center text-white shrink-0 shadow-lg shadow-blue-900/20">
-                <span class="material-symbols-outlined text-2xl">anchor</span>
-            </div>
+          <div class="size-10 rounded-lg bg-white flex items-center justify-center shrink-0 shadow-lg overflow-hidden">
+    <img src="<?= base_url('assets/img/logo.JPEG') ?>" 
+         alt="Logo Distrik Navigasi" 
+         class="h-8 w-auto object-contain">
+</div>
             <div class="flex flex-col">
                 <h1 class="text-slate-900 dark:text-white text-sm font-bold leading-tight">Distrik Navigasi</h1>
                 <p class="text-slate-500 dark:text-slate-400 text-xs font-medium">Tanjungpinang - Kelas I</p>
@@ -55,28 +57,31 @@
         <div class="h-8 w-px bg-slate-200 dark:bg-slate-700 mx-2 hidden md:block"></div>
     </div>
     <div class="flex items-center gap-4">
-        <div class="relative hidden sm:block">
-            <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <span class="material-symbols-outlined text-slate-400 text-lg">search</span>
-            </span>
-            <input class="pl-9 pr-4 py-1.5 text-sm bg-slate-100 dark:bg-slate-800 border-none rounded-full w-64 focus:ring-2 focus:ring-primary/20 placeholder-slate-400 text-slate-700 dark:text-slate-200" placeholder="Global Search..." type="text"/>
-        </div>
+        
         <div class="flex items-center gap-3 pl-4 border-l border-slate-200 dark:border-slate-700">
-            <div class="text-right hidden sm:block">
-                <p class="text-sm font-semibold text-slate-900 dark:text-white leading-none"><?= esc(session()->get('nama_lengkap') ?? 'Administrator') ?></p>
-                <span class="inline-flex items-center gap-1 mt-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-primary/10 text-primary dark:text-blue-300 uppercase tracking-wide">
-                    <?= esc(session()->get('role') ?? 'Admin Role') ?>
-                </span>
-            </div>
+           <div class="text-right hidden sm:block">
+    <p class="text-sm font-semibold text-slate-900 dark:text-white leading-none">
+        <?= esc(session()->get('nama_lengkap') ?? 'Administrator') ?>
+    </p>
+    <div class="flex items-center justify-end gap-2 mt-1">
+        
+        <?php 
+            // Ambil data NIP langsung dari session
+            $nipPegawai = session()->get('nip');
             
-            <?php 
-                $namaAdmin = session()->get('nama_lengkap') ?? 'Admin';
-                $partsAdmin = explode(' ', $namaAdmin);
-                $initialsAdmin = strtoupper(substr($partsAdmin[0], 0, 1) . (isset($partsAdmin[1]) ? substr($partsAdmin[1], 0, 1) : ''));
-            ?>
-            <div class="flex size-9 items-center justify-center rounded-full bg-slate-200 dark:bg-slate-700 border-2 border-white dark:border-slate-600 shadow-sm text-slate-600 dark:text-slate-300 font-bold text-xs">
-                <?= $initialsAdmin ?>
-            </div>
+            // Logika Pintar: Tampilkan tulisan NIP HANYA kalau datanya ada (bukan NULL atau kosong)
+            if (!empty($nipPegawai)) : 
+        ?>
+            <span class="text-[10px] font-medium text-slate-500 dark:text-slate-400 tracking-wider">
+                NIP: <?= esc($nipPegawai) ?>
+            </span>
+        <?php endif; ?>
+        
+        <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-primary/10 text-primary dark:text-blue-300 uppercase tracking-wide">
+            <?= esc(session()->get('role') ?? 'Admin') ?>
+        </span>
+    </div>
+</div>
 
             <a href="<?= base_url('login/logout') ?>" class="text-slate-400 hover:text-red-500 ml-1 transition-colors" title="Logout">
                 <span class="material-symbols-outlined text-2xl">logout</span>
@@ -123,18 +128,7 @@
     <span class="text-sm font-medium">System Settings</span>
 </a>
         </nav>
-        <div class="p-4 border-t border-slate-200 dark:border-slate-800">
-            <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3">
-                <div class="flex items-center gap-2 mb-2">
-                    <span class="material-symbols-outlined text-primary dark:text-blue-400">cloud_sync</span>
-                    <span class="text-xs font-bold text-primary dark:text-blue-400">System Status</span>
-                </div>
-                <div class="w-full bg-blue-200 dark:bg-blue-800 rounded-full h-1.5 mb-1">
-                    <div class="bg-primary h-1.5 rounded-full" style="width: 98%"></div>
-                </div>
-                <p class="text-[10px] text-slate-500 dark:text-slate-400 text-right">Online (98%)</p>
-            </div>
-        </div>
+      
     </aside>
 
     <main class="flex-1 flex flex-col overflow-hidden bg-slate-50/50 dark:bg-background-dark relative">
@@ -295,12 +289,15 @@
                                         </td>
                                         <td class="px-6 py-4 text-right">
                                             <div class="flex items-center justify-end gap-2">
-                                                <button class="px-2 py-1 text-xs font-medium text-slate-600 bg-white border border-slate-200 rounded hover:bg-slate-50 hover:text-primary transition-colors">
-                                                    Edit
-                                                </button>
-                                                <button class="p-1.5 text-slate-400 hover:text-red-500 rounded transition-colors" title="Suspend">
-                                                    <span class="material-symbols-outlined text-lg">block</span>
-                                                </button>
+                                               <a href="<?= base_url('admin/user/edit/' . $u['id_user']) ?>" 
+   class="px-2 py-1 text-xs font-medium text-slate-600 bg-white border border-slate-200 rounded hover:bg-slate-50 hover:text-primary transition-colors inline-block">
+    Edit
+</a>
+                                                <a href="<?= base_url('admin/user/delete/' . $u['id_user']) ?>" 
+   onclick="return confirm('Apakah Anda yakin ingin menghapus akun <?= esc($u['nama_lengkap']) ?> secara permanen?');" 
+   class="p-1.5 text-slate-400 hover:text-red-500 rounded transition-colors" title="Hapus Akun">
+    <span class="material-symbols-outlined text-lg">delete</span>
+</a>
                                             </div>
                                         </td>
                                     </tr>

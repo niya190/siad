@@ -50,12 +50,14 @@ class ArsipController extends BaseController
     public function create()
     {
         $klasifikasiModel = new \App\Models\KlasifikasiModel();
-        $gedungModel = new \App\Models\GedungModel(); // Panggil GedungModel
+        $gedungModel      = new \App\Models\GedungModel(); // Panggil Gedung
+        $ruanganModel     = new \App\Models\RuanganModel(); // <-- INI YANG TADI KETINGGALAN, Wajib dipanggil biar ga error!
 
         $data = [
             'title'       => 'Tambah Arsip Baru',
             'klasifikasi' => $klasifikasiModel->findAll(),
-            'gedung'      => $gedungModel->findAll() // Kirim data gedung ke form
+            'gedung'      => $gedungModel->findAll(), // Kirim data gedung
+            'ruangan'     => $ruanganModel->findAll() // Kirim data ruangan
         ];
 
         return view('staf/arsip/create_view', $data);
@@ -184,16 +186,71 @@ class ArsipController extends BaseController
         $arsipModel->update($id, $data);
         return redirect()->to(base_url('staf/arsip/detail/' . $id))->with('success', 'Data arsip berhasil diperbarui!');
     }
-    public function save()
+       public function save()
     {
-        // Nanti di sini isi logika untuk insert ke database
-        // Sementara kita buat kembali ke dashboard biar gak error 404
-        return redirect()->to(base_url('staf/dashboard'));
-    }
+        $arsipModel = new \App\Models\ArsipModel();
 
-   
-    // Logika untuk menangkap dan menyimpan perubahan Edit Data
-    
+        // 1. Ambil data dasar
+        $jenis_arsip      = $this->request->getPost('jenis_arsip');
+        $kode_klasifikasi = $this->request->getPost('kode_klasifikasi_text'); 
+        $kode_bidang      = $this->request->getPost('kode_bidang'); // Input baru
+        $no_urut          = $this->request->getPost('no_urut');
+        $tahun            = $this->request->getPost('tahun');
+        $tanggal_surat    = $this->request->getPost('tanggal_surat');
+        $kode_satker      = 'DNV-TPI'; 
+        
+        $id_klas = $this->request->getPost('id_klasifikasi');
+
+        // 2. Logika Cerdas Pembuatan Nomor
+        if ($jenis_arsip == 'Nota Dinas') {
+            // Hasil: SDMH/17/DNV-TPI/2026
+            $nomor_surat = strtoupper($kode_bidang) . '/' . $no_urut . '/' . $kode_satker . '/' . $tahun;
+            $id_klas = null; // Dikosongkan karena tidak pakai KKA
+        } else {
+            // Hasil: UM.001/17/DNV-TPI/III/2026
+            $array_bulan = [1=>'I', 2=>'II', 3=>'III', 4=>'IV', 5=>'V', 6=>'VI', 7=>'VII', 8=>'VIII', 9=>'IX', 10=>'X', 11=>'XI', 12=>'XII'];
+            $bulan_angka = (int)date('n', strtotime($tanggal_surat));
+            $nomor_surat = $kode_klasifikasi . '/' . $no_urut . '/' . $kode_satker . '/' . $array_bulan[$bulan_angka] . '/' . $tahun;
+        }
+
+        // 3. Upload File PDF
+        $fileScan = $this->request->getFile('file_scan');
+        $namaFile = null;
+        if ($fileScan && $fileScan->isValid() && ! $fileScan->hasMoved()) {
+            $namaFile = $fileScan->getRandomName();
+            $fileScan->move('uploads/arsip', $namaFile);
+        }
+
+        // 4. Data untuk di-save
+        $data = [
+            'id_klasifikasi'  => $id_klas, // Akan bernilai NULL kalau Nota Dinas
+            'nomor_surat'     => $nomor_surat,
+            'jenis_arsip'     => $jenis_arsip,
+            'tanggal_surat'   => $tanggal_surat,
+            'tanggal_terima'  => date('Y-m-d'),
+            'pengirim_tujuan' => $this->request->getPost('pengirim_tujuan'),
+            'perihal'         => $this->request->getPost('perihal'),
+            'id_rak'          => $this->request->getPost('id_rak'),
+            'file_scan'       => $namaFile,
+            'id_petugas'      => session()->get('id_user') ?? 1 
+        ];
+
+        // 5. Eksekusi Simpan
+        $arsipModel->insert($data);
+
+        // 6. Redirect Pintar ke Halaman yang Sesuai
+        if ($jenis_arsip == 'Surat Masuk') {
+            $url_tujuan = 'staf/arsip-masuk';
+        } elseif ($jenis_arsip == 'Surat Keluar') {
+            $url_tujuan = 'staf/arsip-keluar';
+        } elseif ($jenis_arsip == 'Nota Dinas') {
+            $url_tujuan = 'staf/nota-dinas';
+        } else {
+            $url_tujuan = 'staf/arsip'; 
+        }
+
+        return redirect()->to(base_url($url_tujuan))->with('success', 'Data ' . $jenis_arsip . ' berhasil ditambahkan!');
+    }
     // =======================================================
     // 1. FUNGSI HAPUS ARSIP & FILE PDF
     // =======================================================
@@ -241,5 +298,7 @@ class ArsipController extends BaseController
             $data = $rakModel->where('id_lemari', $id_lemari)->findAll();
             return $this->response->setJSON($data);
         }
+
+        
     }
 }

@@ -123,7 +123,7 @@
         </a>
         
     </div>
-</div>
+    </div>
 </div>
     </aside>
 
@@ -140,10 +140,7 @@
                     <input class="pl-10 pr-4 py-1.5 bg-[#f6f6f8] border-none rounded-lg text-xs w-64 focus:ring-1 focus:ring-primary text-slate-600" placeholder="Cari NIP atau Lokasi..." type="text"/>
                 </div>
                 <div class="flex items-center gap-4 border-l border-slate-100 pl-6">
-                    <button class="relative text-slate-400 hover:text-primary">
-                        <span class="material-symbols-outlined text-[22px]">notifications</span>
-                        <span class="absolute -top-0.5 -right-0.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
-                    </button>
+                    
                     <div class="text-xs font-bold text-slate-700"><?= date('l, d F Y') ?></div>
                 </div>
             </div>

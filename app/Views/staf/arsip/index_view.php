@@ -2,7 +2,11 @@
 
 <div class="mb-6">
     <div class="flex items-center gap-2 text-[#0a2569] mb-2">
-        <span class="material-symbols-outlined text-3xl">folder_managed</span>
+        <div class="size-10 rounded-lg bg-white flex items-center justify-center shrink-0 shadow-lg overflow-hidden">
+    <img src="<?= base_url('assets/img/logo.JPEG') ?>" 
+         alt="Logo Distrik Navigasi" 
+         class="h-8 w-auto object-contain">
+</div>
         <h2 class="text-xl font-bold uppercase tracking-tight">Data Arsip & Naskah Dinas</h2>
     </div>
     <p class="text-slate-500 text-sm">Pencarian dokumen surat masuk, keluar, dan nota dinas.</p>

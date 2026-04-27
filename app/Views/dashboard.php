@@ -15,7 +15,7 @@
     
     <div class="container">
         <div class="header">
-            <h2>Selamat Datang di EDUSYS FTTK</h2>
+            <h2>Selamat Datang di SIAD</h2>
             <a href="<?= base_url('/logout') ?>" class="logout-btn">Logout</a>
         </div>
         

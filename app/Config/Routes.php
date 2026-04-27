@@ -28,6 +28,9 @@ $routes->group('admin', ['filter' => 'admin'], static function ($routes) {
     $routes->get('user', 'Admin\UserController::index');
     $routes->get('user/create', 'Admin\UserController::create');
     $routes->post('user/save', 'Admin\UserController::save');
+    $routes->get('user/delete/(:num)', 'Admin\UserController::delete/$1');
+    $routes->get('user/edit/(:num)', 'Admin\UserController::edit/$1'); 
+    $routes->post('user/update/(:num)', 'Admin\UserController::update/$1'); 
 
     // Kelola Master Data Kantor
     $routes->get('divisi', 'Admin\DivisiController::index'); 
@@ -40,6 +43,7 @@ $routes->group('admin', ['filter' => 'admin'], static function ($routes) {
     // ARSIP ADMIN
     $routes->get('arsip/search', 'Admin\ArsipController::search'); 
     $routes->get('arsip/edit/(:num)', 'Admin\ArsipController::edit/$1');
+    $routes->post('arsip/update/(:num)', 'Admin\ArsipController::update/$1'); 
     $routes->get('arsip/detail/(:num)', 'Admin\ArsipController::detail/$1');
     $routes->get('arsip/create', 'Admin\ArsipController::create');
     $routes->post('arsip/save', 'Admin\ArsipController::save');
@@ -58,7 +62,6 @@ $routes->group('admin', ['filter' => 'admin'], static function ($routes) {
     $routes->get('settings/reset', 'Admin\SettingsController::resetDatabase');
     $routes->get('arsip/export', 'Admin\ArsipController::export');
     $routes->post('arsip/export/process', 'Admin\ArsipController::processExport');
-    $routes->get('notifications', 'Admin\NotificationController::index');
 
     // Kelola Master Data Lokasi (Penyimpanan)
     // Kelola Master Data Lokasi (Penyimpanan 4 Level)
@@ -98,7 +101,7 @@ $routes->group('staf', ['filter' => 'staf'], static function ($routes) {
     // CRUD ARSIP STAF (INI KUNCI BIAR GAK 404)
     $routes->get('arsip', 'Staf\ArsipController::index');
     $routes->get('arsip/create', 'Staf\ArsipController::create');
-    $routes->post('arsip/simpan', 'Staf\ArsipController::save');
+    $routes->post('arsip/save', 'Staf\ArsipController::save');
     $routes->get('arsip/delete/(:num)', 'Staf\ArsipController::delete/$1');
     
     // --> INI DIA YANG BIKIN ERROR KALAU HILANG <--
@@ -108,6 +111,7 @@ $routes->group('staf', ['filter' => 'staf'], static function ($routes) {
     $routes->get('aktivitas', 'Staf\AktivitasController::index');
     $routes->get('klasifikasi/populer', 'Staf\KlasifikasiController::populer');     
     $routes->get('penyimpanan', 'Staf\PenyimpananController::index');
+    $routes->get('penyimpanan/detail/(:num)', 'Staf\PenyimpananController::detail/$1');
     // Rute AJAX Dropdown Dinamis Staf
     // Rute AJAX Dropdown Dinamis Staf
     $routes->post('arsip/getRuangan', 'Staf\ArsipController::getRuangan'); // <-- Tambahkan baris ini

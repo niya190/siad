@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title><?= $title ?? 'Detail Arsip' ?> - SiArsip Navigasi</title>
+    <title><?= $title ?? 'Detail Arsip' ?> - SIAD Navigasi</title>
     <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;700;900&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -29,11 +29,13 @@
     <div class="mx-auto flex max-w-[1280px] items-center justify-between px-6 py-3">
         <div class="flex items-center gap-8">
             <div class="flex items-center gap-3">
-                <div class="flex size-10 items-center justify-center rounded-lg bg-white/10 text-white backdrop-blur-sm">
-                    <span class="material-symbols-outlined text-2xl">folder_managed</span>
-                </div>
+                <div class="size-10 rounded-lg bg-white flex items-center justify-center shrink-0 shadow-lg overflow-hidden">
+    <img src="<?= base_url('assets/img/logo.JPEG') ?>" 
+         alt="Logo Distrik Navigasi" 
+         class="h-8 w-auto object-contain">
+</div>
                 <div>
-                    <h2 class="text-lg font-bold leading-tight text-white">SiArsip</h2>
+                    <h2 class="text-lg font-bold leading-tight text-white">SIAD</h2>
                     <p class="text-xs text-blue-200">Navigasi Tanjungpinang</p>
                 </div>
             </div>
@@ -47,12 +49,7 @@
         </div>
         
         <div class="flex items-center gap-4">
-            <div class="hidden w-64 md:block">
-                <div class="relative flex items-center">
-                    <span class="material-symbols-outlined absolute left-3 text-[20px] text-blue-300">search</span>
-                    <input class="w-full rounded-lg border-none bg-blue-900/50 py-2 pl-10 pr-4 text-sm text-white placeholder-blue-300 focus:bg-blue-900 focus:ring-2 focus:ring-white/20" placeholder="Cari arsip..." type="text"/>
-                </div>
-            </div>
+            
             
             <button class="relative flex size-9 items-center justify-center rounded-full text-blue-100 hover:bg-white/10 hover:text-white">
                 <span class="material-symbols-outlined text-[20px]">notifications</span>
@@ -61,18 +58,34 @@
 
             <div class="flex items-center gap-3 border-l border-blue-800 pl-4">
                 <div class="hidden text-right md:block">
-                    <p class="text-sm font-semibold text-white"><?= esc(session()->get('nama_lengkap') ?? 'User Staff') ?></p>
-                    <p class="text-xs text-blue-200"><?= esc(session()->get('divisi') ?? 'Staff') ?></p>
-                </div>
-                
-                <?php 
-                    $nama = session()->get('nama_lengkap') ?? 'Staf';
-                    $parts = explode(' ', $nama);
-                    $initials = strtoupper(substr($parts[0], 0, 1) . (isset($parts[1]) ? substr($parts[1], 0, 1) : ''));
-                ?>
-                <button class="relative flex size-10 items-center justify-center overflow-hidden rounded-full border-2 border-blue-400/30 bg-white text-primary font-bold ring-2 ring-white/10 transition-all hover:ring-white/30">
-                    <?= $initials ?>
-                </button>
+    <p class="text-sm font-semibold text-white leading-tight mb-1">
+        <?= esc(session()->get('nama_lengkap') ?? 'User Staff') ?>
+    </p>
+    
+    <div class="flex items-center justify-end gap-2">
+        <?php 
+            $nipPegawai = session()->get('nip');
+            if (!empty($nipPegawai)) : 
+        ?>
+            <span class="text-[10px] font-medium text-blue-200 tracking-wider">
+                NIP: <?= esc($nipPegawai) ?>
+            </span>
+        <?php endif; ?>
+        
+        <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-white/20 text-white uppercase tracking-wide border border-white/10">
+            <?= esc(session()->get('divisi') ?? 'Staff') ?>
+        </span>
+    </div>
+</div>
+
+<?php 
+    $nama = session()->get('nama_lengkap') ?? 'Staf';
+    $parts = explode(' ', $nama);
+    $initials = strtoupper(substr($parts[0], 0, 1) . (isset($parts[1]) ? substr($parts[1], 0, 1) : ''));
+?>
+<button class="relative flex size-10 ml-3 items-center justify-center overflow-hidden rounded-full border-2 border-blue-400/30 bg-white text-primary font-bold ring-2 ring-white/10 transition-all hover:ring-white/30">
+    <?= $initials ?>
+</button>
                 <a href="<?= base_url('login/logout') ?>" class="text-blue-200 hover:text-red-400 ml-2 transition-colors" title="Logout">
                     <span class="material-symbols-outlined">logout</span>
                 </a>

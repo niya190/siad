@@ -89,4 +89,70 @@ class UserController extends BaseController
         // 4. Kembali ke halaman User Management dengan pesan sukses
         return redirect()->to(base_url('admin/user'))->with('success', 'New staff member has been registered successfully.');
     }
+   public function edit($id)
+{
+    $userModel = new UserModel();
+    $userData = $userModel->find($id);
+
+    if (!$userData) {
+        return redirect()->to('admin/user')->with('error', 'User tidak ditemukan!');
+    }
+
+    $data = [
+        'title' => 'Edit Data Pengguna',
+        'user'  => $userData
+    ];
+    
+    // DEBUG: Berhentikan eksekusi dan lihat isi data dari database
+    // dd($userData);
+
+    return view('admin/user/edit_view', $data);
+}
+
+public function update($id)
+    {
+        $userModel = new \App\Models\UserModel();
+        
+        // 1. Ambil data lengkap dari form Edit
+        $dataUpdate = [
+            'id_user'      => $id,
+            'nama_lengkap' => $this->request->getPost('nama_lengkap'),
+            'username'     => $this->request->getPost('username'),
+            'email'        => $this->request->getPost('email'),
+            'role'         => $this->request->getPost('role'),
+            'divisi'       => $this->request->getPost('divisi'),
+            'status'       => $this->request->getPost('status'),
+        ];
+
+        // 2. Cek kalau user ganti password
+        $password = $this->request->getPost('password');
+        if (!empty($password)) {
+            $dataUpdate['password_hash'] = password_hash($password, PASSWORD_DEFAULT);
+        }
+
+        // 3. Simpan perubahan ke database
+        $userModel->save($dataUpdate);
+        
+        return redirect()->to('admin/user')->with('success', 'Data user berhasil diperbarui!');
+    }
+    public function delete($id)
+    {
+        $userModel = new \App\Models\UserModel();
+        
+        // Cari data user berdasarkan ID
+        $user = $userModel->find($id);
+
+        if ($user) {
+            // (Opsional tapi penting) Mencegah Admin menghapus akunnya sendiri yang sedang dipakai login
+            if ($id == session()->get('id_user')) {
+                return redirect()->back()->with('error', 'Anda tidak bisa menghapus akun Anda sendiri yang sedang aktif.');
+            }
+
+            // Hapus user dari database
+            $userModel->delete($id);
+            return redirect()->to(base_url('admin/user'))->with('success', 'Akun pengguna berhasil dihapus secara permanen!');
+        }
+
+        return redirect()->back()->with('error', 'Pengguna tidak ditemukan.');
+    }
 }

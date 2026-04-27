@@ -25,12 +25,15 @@
 <div class="relative flex flex-1 items-center justify-center p-4 md:p-8">
     <div class="w-full max-w-[1100px] grid grid-cols-1 lg:grid-cols-2 bg-white dark:bg-slate-900 rounded-xl shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-800">
         
+        <!-- PANEL KIRI -->
         <div class="hidden lg:flex flex-col justify-between p-12 bg-primary relative overflow-hidden">
             <div class="absolute inset-0 bg-gradient-to-br from-primary via-primary/90 to-blue-900/80"></div>
             <div class="relative z-10">
                 <div class="flex items-center gap-3 mb-8">
                     <div class="p-2 bg-white rounded-lg shadow-lg">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Logo_Kementerian_Perhubungan_Republik_Indonesia.png/600px-Logo_Kementerian_Perhubungan_Republik_Indonesia.png" alt="Logo Kemenhub" class="h-12 w-auto">
+                        <!-- LOGO SUDAH DIGANTI KE LOKAL -->
+                       <img src="<?= base_url('assets/img/logo.JPEG') ?>" class="h-12 w-auto">
+                        
                     </div>
                     <div>
                         <h3 class="text-white font-bold text-lg leading-tight">Distrik Navigasi Tipe A</h3>
@@ -47,10 +50,12 @@
             </div>
         </div>
 
+        <!-- PANEL KANAN -->
         <div class="flex flex-col justify-center p-8 md:p-16">
             
+            <!-- LOGO MOBILE -->
             <div class="lg:hidden flex items-center gap-3 mb-10">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Logo_Kementerian_Perhubungan_Republik_Indonesia.png/600px-Logo_Kementerian_Perhubungan_Republik_Indonesia.png" alt="Logo Kemenhub" class="h-10 w-auto">
+                <img src="<?= base_url('assets/img/logo.png') ?>" alt="Logo Kemenhub" class="h-10 w-auto object-contain">
                 <div>
                     <h2 class="text-primary font-bold text-xl tracking-tight">SIAD</h2>
                     <p class="text-slate-500 text-xs">Distrik Navigasi Tanjungpinang</p>
@@ -68,6 +73,7 @@
                     <?= session()->getFlashdata('error') ?>
                 </div>
             <?php endif; ?>
+
             <?php if(session()->getFlashdata('success')): ?>
                 <div class="mb-6 p-4 bg-green-50 border border-green-200 text-green-700 rounded-xl flex items-center gap-2 font-medium text-sm">
                     <span class="material-symbols-outlined">check_circle</span>
@@ -127,7 +133,6 @@
 </footer>
 
 <script>
-    // Logika menampilkan atau menyembunyikan password
     function togglePassword() {
         var pwd = document.getElementById("passwordInput");
         var icon = document.getElementById("eyeIcon");

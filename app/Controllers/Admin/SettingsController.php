@@ -8,10 +8,55 @@ class SettingsController extends BaseController
 {
     public function index()
     {
-        // Ambil data pengaturan dari Session, jika belum ada beri nilai Default
-        $data = [
-            'title'          => 'System Settings',
-            'office_name'    => session()->get('office_name') ?? 'Distrik Navigasi Tanjungpinang',
+        $diskPath = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') ? 'C:' : '/';
+    
+    $totalSpace = disk_total_space($diskPath); // Total Kapasitas
+    $freeSpace  = disk_free_space($diskPath);  // Sisa Kapasitas
+    $usedSpace  = $totalSpace - $freeSpace;    // Kapasitas Terpakai
+    
+    // Jadikan Persentase (%)
+    $storagePercent = ($totalSpace > 0) ? round(($usedSpace / $totalSpace) * 100) : 0;
+
+    // Ubah ke GB biar enak dibaca
+    $storageUsedGB  = round($usedSpace / 1073741824, 2);
+    $storageTotalGB = round($totalSpace / 1073741824, 2);
+
+    // ==========================================
+    // 2. HITUNG SERVER LOAD (Beban CPU)
+    // ==========================================
+    $serverLoad = 0;
+    if (function_exists('sys_getloadavg')) {
+        // Fungsi ini cuma jalan di server asli (Linux/Mac)
+        $load = sys_getloadavg();
+        $serverLoad = round($load[0] * 10); // Angka kasar persentase
+    } else {
+        // Kalau di Windows (WAMP/XAMPP), fungsi di atas sering mati. 
+        // Jadi kita kasih angka simulasi aja antara 5% sampai 15% biar tetep gerak.
+        $serverLoad = rand(5, 15); 
+    }
+
+    // ==========================================
+    // 3. TENTUKAN STATUS HEALTHY / WARNING
+    // ==========================================
+    $storageStatus = ($storagePercent > 80) ? 'Warning' : 'Healthy';
+    $storageColor  = ($storagePercent > 80) ? 'bg-red-500' : 'bg-green-500';
+
+    $serverStatus  = ($serverLoad > 80) ? 'High Load' : 'Healthy';
+    $serverColor   = ($serverLoad > 80) ? 'bg-red-500' : 'bg-blue-500';
+
+    // Masukin semua data ini ke array $data biar bisa dikirim ke View
+    $data = [
+        'title'           => 'System Settings',
+        'storage_percent' => $storagePercent,
+        'storage_used'    => $storageUsedGB,
+        'storage_total'   => $storageTotalGB,
+        'storage_status'  => $storageStatus,
+        'storage_color'   => $storageColor,
+        
+        'server_load'     => $serverLoad,
+        'server_status'   => $serverStatus,
+        'server_color'    => $serverColor,
+     'office_name'    => session()->get('office_name') ?? 'Distrik Navigasi Tanjungpinang',
             'classification' => session()->get('classification') ?? 'Kelas I',
             'address'        => session()->get('address') ?? 'Jl. Pelabuhan No. 12, Tanjung Pinang',
             'email'          => session()->get('email') ?? 'admin@navigasi.go.id',
@@ -21,6 +66,7 @@ class SettingsController extends BaseController
             'notif_expiring' => session()->get('notif_expiring') ?? '1',
             'theme'          => session()->get('theme') ?? 'light',
         ];
+            
 
         return view('admin/settings/index_view', $data);
     }

@@ -68,15 +68,32 @@ class ArsipController extends BaseController
     // Memproses data yang dikirim dari form
     public function save()
     {
-        $arsipModel = new ArsipModel();
+        $arsipModel = new \App\Models\ArsipModel();
 
-        // Menggabungkan Kode Klasifikasi, No Urut, dan Tahun menjadi Nomor Surat Kemenhub (Misal: KP.102/0045/2024)
+        // 1. Ambil data dasar
+        $jenis_arsip      = $this->request->getPost('jenis_arsip');
         $kode_klasifikasi = $this->request->getPost('kode_klasifikasi_text'); 
+        $kode_bidang      = $this->request->getPost('kode_bidang'); // Input baru
         $no_urut          = $this->request->getPost('no_urut');
         $tahun            = $this->request->getPost('tahun');
-        $nomor_surat      = $kode_klasifikasi . '/' . $no_urut . '/' . $tahun;
+        $tanggal_surat    = $this->request->getPost('tanggal_surat');
+        $kode_satker      = 'DNV-TPI'; 
+        
+        $id_klas = $this->request->getPost('id_klasifikasi');
 
-        // Proses Upload File Scan (Opsional)
+        // 2. Logika Cerdas Pembuatan Nomor
+        if ($jenis_arsip == 'Nota Dinas') {
+            // Hasil: SDMH/17/DNV-TPI/2026
+            $nomor_surat = strtoupper($kode_bidang) . '/' . $no_urut . '/' . $kode_satker . '/' . $tahun;
+            $id_klas = null; // Dikosongkan karena tidak pakai KKA
+        } else {
+            // Hasil: UM.001/17/DNV-TPI/III/2026
+            $array_bulan = [1=>'I', 2=>'II', 3=>'III', 4=>'IV', 5=>'V', 6=>'VI', 7=>'VII', 8=>'VIII', 9=>'IX', 10=>'X', 11=>'XI', 12=>'XII'];
+            $bulan_angka = (int)date('n', strtotime($tanggal_surat));
+            $nomor_surat = $kode_klasifikasi . '/' . $no_urut . '/' . $kode_satker . '/' . $array_bulan[$bulan_angka] . '/' . $tahun;
+        }
+
+        // 3. Upload File PDF
         $fileScan = $this->request->getFile('file_scan');
         $namaFile = null;
         if ($fileScan && $fileScan->isValid() && ! $fileScan->hasMoved()) {
@@ -84,21 +101,24 @@ class ArsipController extends BaseController
             $fileScan->move('uploads/arsip', $namaFile);
         }
 
-        // Simpan ke Database
-        $arsipModel->insert([
-            'id_klasifikasi'  => $this->request->getPost('id_klasifikasi'),
+        // 4. Data untuk di-save
+        $data = [
+            'id_klasifikasi'  => $id_klas, 
             'nomor_surat'     => $nomor_surat,
-            'jenis_arsip'     => $this->request->getPost('jenis_arsip'),
-            'tanggal_surat'   => $this->request->getPost('tanggal_surat'),
-            'tanggal_terima'  => date('Y-m-d'), // Tanggal hari ini di-input
+            'jenis_arsip'     => $jenis_arsip,
+            'tanggal_surat'   => $tanggal_surat,
+            'tanggal_terima'  => date('Y-m-d'),
             'pengirim_tujuan' => $this->request->getPost('pengirim_tujuan'),
             'perihal'         => $this->request->getPost('perihal'),
-            'id_rak'          => $this->request->getPost('id_rak'), // Lokasi rak final
+            'id_rak'          => $this->request->getPost('id_rak'),
             'file_scan'       => $namaFile,
-            'id_petugas'      => session()->get('id_user') ?? 1 // ID User yang login
-        ]);
+            'id_petugas'      => session()->get('id_user') ?? 1 
+        ];
 
-        return redirect()->to(base_url('admin/arsip/search'))->with('success', 'Data arsip berhasil disimpan!');
+        // 5. Eksekusi Simpan
+        $arsipModel->insert($data);
+        
+        return redirect()->to(base_url('admin/arsip/search'))->with('success', 'Data arsip berhasil ditambahkan dengan nomor Srikandi!');
     }
 
     // === FUNGSI AJAX UNTUK DROPDOWN LOKASI DINAMIS ===
@@ -200,6 +220,71 @@ class ArsipController extends BaseController
         
         return redirect()->back()->with('error', 'Format PDF membutuhkan library tambahan. Silakan gunakan format Excel (CSV).');
     }
+    // --- FUNGSI UNTUK MENAMPILKAN HALAMAN EDIT ARSIP ---
+public function edit($id)
+{
+    $arsipModel = new \App\Models\ArsipModel();
+    
+    // Cari data arsip berdasarkan ID-nya
+    $arsipData = $arsipModel->find($id);
+
+    // Kalau datanya nggak ada, balikin ke halaman pencarian
+    if (!$arsipData) {
+        return redirect()->to('admin/arsip/search')->with('error', 'Data arsip tidak ditemukan!');
+    }
+
+    $data = [
+        'title' => 'Edit Data Arsip',
+        'arsip' => $arsipData // Ini data yang bakal diisi otomatis ke form
+    ];
+
+    return view('admin/arsip/edit_view', $data);
+}
+
+// --- FUNGSI UNTUK MENYIMPAN PERUBAHAN ARSIP KE DATABASE ---
+public function update($id)
+{
+    $arsipModel = new \App\Models\ArsipModel();
+    
+    // 1. Ambil data arsip yang lama (buat ngecek file lama)
+    $arsipLama = $arsipModel->find($id);
+
+    // 2. Ambil data teks dari form
+    $dataUpdate = [
+        'id_arsip'       => $id,
+        'nomor_surat'    => $this->request->getPost('nomor_surat'),
+        'perihal'        => $this->request->getPost('perihal'),
+        'tanggal_surat'  => $this->request->getPost('tanggal_surat'),
+        'keterangan'     => $this->request->getPost('keterangan'),
+        'jenis_arsip'    => $this->request->getPost('jenis_arsip'),
+    ];
+
+    // 3. LOGIKA UPLOAD FILE BARU
+    $fileArsip = $this->request->getFile('file_scan');
+    
+    // Cek apakah ada file baru yang di-upload dan valid
+    if ($fileArsip && $fileArsip->isValid() && !$fileArsip->hasMoved()) {
+        
+        // Generate nama file baru (biar gak bentrok namanya)
+        $namaFileBaru = $fileArsip->getRandomName();
+        
+        // Pindahkan file baru ke folder public/uploads/arsip
+        $fileArsip->move('uploads/arsip', $namaFileBaru);
+        
+        // Masukkan nama file baru ke data yang mau disimpan ke database
+        $dataUpdate['file_scan'] = $namaFileBaru;
+
+        // (Opsional & Bikin Rapi) Hapus file lama dari folder server biar gak menuh-menuhin memori
+        if (!empty($arsipLama['file_scan']) && file_exists('uploads/arsip/' . $arsipLama['file_scan'])) {
+            unlink('uploads/arsip/' . $arsipLama['file_scan']);
+        }
+    }
+
+    // 4. Simpan semua perubahan ke database
+    $arsipModel->save($dataUpdate);
+    
+    return redirect()->to('admin/arsip/search')->with('success', 'Data dan File Arsip berhasil diperbarui!');
+}
     // ====================================================================
     // FITUR DETAIL ARSIP
     // ====================================================================

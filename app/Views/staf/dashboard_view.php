@@ -17,7 +17,11 @@
     <div class="mx-auto flex max-w-[1280px] items-center justify-between px-6 py-3">
         <div class="flex items-center gap-8">
             <div class="flex items-center gap-3">
-                <div class="flex size-10 items-center justify-center rounded-lg bg-white/10 text-white"><span class="material-symbols-outlined text-2xl">folder_managed</span></div>
+                <div class="size-10 rounded-lg bg-white flex items-center justify-center shrink-0 shadow-lg overflow-hidden">
+    <img src="<?= base_url('assets/img/logo.JPEG') ?>" 
+         alt="Logo Distrik Navigasi" 
+         class="h-8 w-auto object-contain">
+</div>
                 <div><h2 class="text-lg font-bold leading-tight text-white">SIAD</h2><p class="text-xs text-blue-200">Navigasi Tanjungpinang</p></div>
             </div>
             <nav class="hidden items-center gap-1 md:flex">
@@ -29,12 +33,7 @@
             </nav>
         </div>
       <div class="flex items-center gap-4">
-            <div class="hidden w-64 md:block">
-                <div class="relative flex items-center">
-                    <span class="material-symbols-outlined absolute left-3 text-[20px] text-blue-300">search</span>
-                    <input class="w-full rounded-lg border-none bg-blue-900/50 py-2 pl-10 pr-4 text-sm text-white placeholder-blue-300 focus:bg-blue-900 focus:ring-2 focus:ring-white/20" placeholder="Cari arsip..." type="text"/>
-                </div>
-            </div>
+            
             
             <div class="relative">
                 <button onclick="document.getElementById('dropdownNotif').classList.toggle('hidden')" class="relative flex size-9 items-center justify-center rounded-full text-blue-100 hover:bg-white/20 focus:bg-white/20 focus:outline-none transition-colors">
@@ -85,18 +84,34 @@
 
             <div class="flex items-center gap-3 border-l border-blue-800 pl-4">
                 <div class="hidden text-right md:block">
-                    <p class="text-sm font-semibold text-white"><?= esc(session()->get('nama_lengkap') ?? 'User Staff') ?></p>
-                    <p class="text-xs text-blue-200"><?= esc(session()->get('divisi') ?? 'Staff') ?></p>
-                </div>
-                
-                <?php 
-                    $nama = session()->get('nama_lengkap') ?? 'Staf';
-                    $parts = explode(' ', $nama);
-                    $initials = strtoupper(substr($parts[0], 0, 1) . (isset($parts[1]) ? substr($parts[1], 0, 1) : ''));
-                ?>
-                <button class="relative flex size-10 items-center justify-center overflow-hidden rounded-full border-2 border-blue-400/30 bg-white text-primary font-bold ring-2 ring-white/10 transition-all hover:ring-white/30">
-                    <?= $initials ?>
-                </button>
+    <p class="text-sm font-semibold text-white leading-tight mb-1">
+        <?= esc(session()->get('nama_lengkap') ?? 'User Staff') ?>
+    </p>
+    
+    <div class="flex items-center justify-end gap-2">
+        <?php 
+            $nipPegawai = session()->get('nip');
+            if (!empty($nipPegawai)) : 
+        ?>
+            <span class="text-[10px] font-medium text-blue-200 tracking-wider">
+                NIP: <?= esc($nipPegawai) ?>
+            </span>
+        <?php endif; ?>
+        
+        <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-white/20 text-white uppercase tracking-wide border border-white/10">
+            <?= esc(session()->get('divisi') ?? 'Staff') ?>
+        </span>
+    </div>
+</div>
+
+<?php 
+    $nama = session()->get('nama_lengkap') ?? 'Staf';
+    $parts = explode(' ', $nama);
+    $initials = strtoupper(substr($parts[0], 0, 1) . (isset($parts[1]) ? substr($parts[1], 0, 1) : ''));
+?>
+<button class="relative flex size-10 ml-3 items-center justify-center overflow-hidden rounded-full border-2 border-blue-400/30 bg-white text-primary font-bold ring-2 ring-white/10 transition-all hover:ring-white/30">
+    <?= $initials ?>
+</button>
                 <a href="<?= base_url('login/logout') ?>" class="text-blue-200 hover:text-red-400 ml-2 transition-colors" title="Logout">
                     <span class="material-symbols-outlined">logout</span>
                 </a>
@@ -114,9 +129,7 @@
                 <p class="mt-2 text-lg text-slate-500">Selamat datang kembali! Berikut adalah ringkasan pengelolaan arsip Navigasi saat ini.</p>
             </div>
             <div class="flex gap-3">
-                <a href="<?= base_url('staf/arsip/create') ?>" class="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-bold text-white shadow-md hover:bg-blue-700 transition-colors">
-                    <span class="material-symbols-outlined text-[20px]">add</span> Arsip Baru
-                </a>
+                
             </div>
         </div>
 
@@ -147,9 +160,9 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
+        <div class="grid grid-cols-1 gap-8">
             
-            <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm lg:col-span-2 flex flex-col">
+    <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm flex flex-col w-full">
                 <div class="mb-6 flex items-center justify-between">
                     <h3 class="text-lg font-bold text-slate-900">Tren Arsip Bulanan (<?= date('Y') ?>)</h3>
                 </div>
@@ -178,41 +191,7 @@
                 </div>
             </div>
 
-            <div class="rounded-xl border border-slate-200 bg-white shadow-sm flex flex-col h-full">
-                <div class="border-b border-slate-100 px-6 py-4 flex items-center justify-between">
-                    <h3 class="text-lg font-bold text-slate-900">Aktivitas Terbaru</h3>
-                    <a href="<?= base_url('staf/aktivitas') ?>" class="text-sm font-bold text-primary hover:underline">Lihat Semua</a>
-                </div>
-                <div class="p-6 flex-1 overflow-y-auto">
-                    <div class="space-y-6">
-                        
-                        <?php if(empty($aktivitas)): ?>
-                            <p class="text-center text-slate-500 text-sm">Belum ada aktivitas.</p>
-                        <?php else: ?>
-                            <?php foreach($aktivitas as $act): 
-                                $is_new = ($act['created_at'] === $act['updated_at']);
-                                $icon = $is_new ? 'add_circle' : 'edit_document';
-                                $icon_color = $is_new ? 'text-green-500 bg-green-50' : 'text-blue-500 bg-blue-50';
-                                $action_text = $is_new ? 'Menambahkan naskah arsip' : 'Memperbarui data arsip';
-                            ?>
-                            <a href="<?= base_url('staf/arsip/detail/' . $act['id_arsip']) ?>" class="flex gap-4 group cursor-pointer hover:bg-slate-50 p-2 -mx-2 rounded-lg transition-colors">
-                                <div class="relative mt-1">
-                                    <div class="flex size-8 items-center justify-center rounded-full <?= $icon_color ?> ring-4 ring-white">
-                                        <span class="material-symbols-outlined text-[16px]"><?= $icon ?></span>
-                                    </div>
-                                    <div class="absolute left-1/2 top-8 -bottom-6 w-px -translate-x-1/2 bg-slate-200 group-last:hidden"></div>
-                                </div>
-                                <div>
-                                    <p class="text-sm font-semibold text-slate-900 group-hover:text-primary transition-colors"><?= esc($act['nama_lengkap'] ?? 'Staf') ?></p>
-                                    <p class="mt-0.5 text-sm text-slate-600"><?= $action_text ?> <span class="font-bold text-slate-800">"<?= esc($act['nomor_surat']) ?>"</span></p>
-                                    <p class="mt-1 text-xs text-slate-400 font-medium"><?= date('d M Y, H:i', strtotime($act['updated_at'])) ?></p>
-                                </div>
-                            </a>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
-
-                    </div>
-                </div>
+            
                 <div class="p-6 pt-0 mt-auto">
                     <a href="<?= base_url('staf/penyimpanan') ?>" class="block text-center w-full rounded-lg border border-slate-200 bg-slate-50 text-slate-700 py-2.5 text-sm font-bold hover:bg-slate-100 transition-colors">Lihat Status Penyimpanan</a>
                 </div>

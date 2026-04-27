@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title><?= $title ?> - SiArsip</title>
+    <title><?= $title ?> - SIAD Navigasi</title>
     <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;700;900&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -17,8 +17,12 @@
 <header class="sticky top-0 z-50 w-full bg-nav-blue shadow-lg">
     <div class="mx-auto flex max-w-[1280px] items-center justify-between px-6 py-3">
         <div class="flex items-center gap-3">
-            <div class="flex size-10 items-center justify-center rounded-lg bg-white/10 text-white"><span class="material-symbols-outlined text-2xl">folder_managed</span></div>
-            <div><h2 class="text-lg font-bold leading-tight text-white">SiArsip</h2><p class="text-xs text-blue-200">Navigasi Tanjungpinang</p></div>
+            <div class="size-10 rounded-lg bg-white flex items-center justify-center shrink-0 shadow-lg overflow-hidden">
+    <img src="<?= base_url('assets/img/logo.JPEG') ?>" 
+         alt="Logo Distrik Navigasi" 
+         class="h-8 w-auto object-contain">
+</div>
+            <div><h2 class="text-lg font-bold leading-tight text-white">SIAD</h2><p class="text-xs text-blue-200">Navigasi Tanjungpinang</p></div>
         </div>
         <a href="<?= base_url('staf/arsip/detail/' . $arsip['id_arsip']) ?>" class="text-blue-100 hover:text-white flex items-center gap-2 text-sm font-medium transition-colors">
             <span class="material-symbols-outlined text-[20px]">arrow_back</span> Batal & Kembali

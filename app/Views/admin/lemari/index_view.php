@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title><?= $title ?> - Admin SiArsip</title>
+    <title><?= $title ?> - Admin SIAD</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
@@ -16,8 +16,10 @@
 <header class="h-16 bg-white dark:bg-surface-dark border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-6 z-20 shadow-sm flex-shrink-0">
 <div class="flex items-center gap-4">
 <div class="flex items-center gap-3">
-<div class="size-10 rounded-lg bg-primary flex items-center justify-center text-white shrink-0 shadow-lg shadow-blue-900/20">
-<span class="material-symbols-outlined text-2xl">anchor</span>
+<div class="size-10 rounded-lg bg-white flex items-center justify-center shrink-0 shadow-lg overflow-hidden">
+    <img src="<?= base_url('assets/img/logo.JPEG') ?>" 
+         alt="Logo Distrik Navigasi" 
+         class="h-8 w-auto object-contain">
 </div>
 <div class="flex flex-col">
 <h1 class="text-slate-900 dark:text-white text-sm font-bold leading-tight">Distrik Navigasi</h1>
@@ -28,77 +30,32 @@
 
 </div>
 <div class="flex items-center gap-4">
-<form action="<?= base_url('admin/arsip/search') ?>" method="GET" class="relative hidden sm:block">
-    <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-        <span class="material-symbols-outlined text-slate-400 text-lg">search</span>
-    </span>
-    <input name="keyword" class="pl-9 pr-4 py-1.5 text-sm bg-slate-100 dark:bg-slate-800 border-none rounded-full w-64 focus:ring-2 focus:ring-primary/20 placeholder-slate-400 text-slate-700 dark:text-slate-200" placeholder="Global search..." type="text"/>
-</form>
-<div class="relative">
-            <button onclick="document.getElementById('adminNotifDropdown').classList.toggle('hidden')" class="relative p-2 rounded-full text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-none">
-                <span class="material-symbols-outlined">notifications</span>
-                <span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-surface-dark animate-pulse"></span>
-            </button>
-            
-            <div id="adminNotifDropdown" class="absolute right-0 mt-2 w-80 bg-white dark:bg-surface-dark rounded-xl shadow-2xl border border-slate-200 dark:border-slate-700 hidden z-50 overflow-hidden">
-                
-                <div class="p-3 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-800/50">
-                    <h3 class="font-bold text-sm text-slate-800 dark:text-white">Notifikasi Sistem</h3>
-                    <button onclick="document.getElementById('adminNotifDropdown').classList.add('hidden')" class="text-slate-400 hover:text-red-500 dark:hover:text-red-400 transition-colors bg-transparent border-none">
-                        <span class="material-symbols-outlined text-[16px] block">close</span>
-                    </button>
-                </div>
-                
-                <div class="max-h-64 overflow-y-auto">
-                    <?php if(empty($aktivitas)): ?>
-                        <div class="p-6 text-center text-sm text-slate-500">Belum ada aktivitas.</div>
-                    <?php else: ?>
-                        
-                        <?php foreach($aktivitas as $notif): ?>
-                        
-                        <a href="<?= base_url('admin/arsip/detail/' . $notif['id_arsip']) ?>" class="flex gap-3 p-4 border-b border-slate-50 dark:border-slate-800/50 hover:bg-blue-50 dark:hover:bg-slate-800 transition-colors group">
-                            <div class="flex-shrink-0 mt-1">
-                                <div class="size-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform">
-                                    <span class="material-symbols-outlined text-[16px]">task</span>
-                                </div>
-                            </div>
-                            <div>
-                                <p class="text-sm font-bold text-slate-800 dark:text-slate-200 leading-tight">Arsip Baru: <?= esc($notif['jenis_arsip']) ?></p>
-                                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-snug">
-                                    Oleh <span class="font-semibold"><?= esc($notif['nama_lengkap'] ?? 'Sistem') ?></span> (<?= esc($notif['nomor_surat']) ?>)
-                                </p>
-                                <p class="text-[10px] text-slate-400 mt-1 font-semibold"><?= date('d M Y, H:i', strtotime($notif['created_at'])) ?></p>
-                            </div>
-                        </a>
-                        
-                        <?php endforeach; ?>
-                        <?php endif; ?>
-                </div>
-                
-                <div class="p-2 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-100 dark:border-slate-800 text-center">
-                    <a href="<?= base_url('admin/notifications') ?>" class="text-xs font-bold text-primary dark:text-blue-400 hover:underline">Lihat Semua Log</a>
-                </div>
 
-            </div>
-        </div>
+
 <div class="flex items-center gap-3 pl-4 border-l border-slate-200 dark:border-slate-700">
             <div class="text-right hidden sm:block">
-                <p class="text-sm font-semibold text-slate-900 dark:text-white leading-none"><?= esc(session()->get('nama_lengkap') ?? 'Administrator') ?></p>
-                <span class="inline-flex items-center gap-1 mt-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-primary/10 text-primary dark:text-blue-300 uppercase tracking-wide">
-                    <?= esc(session()->get('role') ?? 'Admin Role') ?>
-                </span>
-            </div>
+    <p class="text-sm font-semibold text-slate-900 dark:text-white leading-none">
+        <?= esc(session()->get('nama_lengkap') ?? 'Administrator') ?>
+    </p>
+    <div class="flex items-center justify-end gap-2 mt-1">
+        
+        <?php 
+            // Ambil data NIP langsung dari session
+            $nipPegawai = session()->get('nip');
             
-            <?php 
-                // Membuat inisial dari nama
-                $namaAdmin = session()->get('nama_lengkap') ?? 'Admin';
-                $partsAdmin = explode(' ', $namaAdmin);
-                $initialsAdmin = strtoupper(substr($partsAdmin[0], 0, 1) . (isset($partsAdmin[1]) ? substr($partsAdmin[1], 0, 1) : ''));
-            ?>
-            <div class="flex size-9 items-center justify-center rounded-full bg-slate-200 dark:bg-slate-700 border-2 border-white dark:border-slate-600 shadow-sm text-slate-600 dark:text-slate-300 font-bold text-xs">
-                <?= $initialsAdmin ?>
-            </div>
-
+            // Logika Pintar: Tampilkan tulisan NIP HANYA kalau datanya ada (bukan NULL atau kosong)
+            if (!empty($nipPegawai)) : 
+        ?>
+            <span class="text-[10px] font-medium text-slate-500 dark:text-slate-400 tracking-wider">
+                NIP: <?= esc($nipPegawai) ?>
+            </span>
+        <?php endif; ?>
+        
+        <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-primary/10 text-primary dark:text-blue-300 uppercase tracking-wide">
+            <?= esc(session()->get('role') ?? 'Admin') ?>
+        </span>
+    </div>
+</div>
             <a href="<?= base_url('login/logout') ?>" class="text-slate-400 hover:text-red-500 ml-1 transition-colors" title="Logout">
                 <span class="material-symbols-outlined text-2xl">logout</span>
             </a>
@@ -144,18 +101,8 @@
     <span class="text-sm font-medium">System Settings</span>
 </a>
 </nav>
-<div class="p-4 border-t border-slate-200 dark:border-slate-800">
-<div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3">
-<div class="flex items-center gap-2 mb-2">
-<span class="material-symbols-outlined text-primary dark:text-blue-400">cloud_sync</span>
-<span class="text-xs font-bold text-primary dark:text-blue-400">System Status</span>
-</div>
-<div class="w-full bg-blue-200 dark:bg-blue-800 rounded-full h-1.5 mb-1">
-<div class="bg-primary h-1.5 rounded-full" style="width: 98%"></div>
-</div>
-<p class="text-[10px] text-slate-500 dark:text-slate-400 text-right">Online (98%)</p>
-</div>
-</div>
+
+
 </aside>
 <div class="flex flex-1 overflow-hidden">
     <main class="flex-1 flex flex-col overflow-y-auto bg-background-light p-6 md:p-8">

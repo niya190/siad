@@ -31,9 +31,11 @@
     <div class="mx-auto flex max-w-[1280px] items-center justify-between px-6 py-3">
         <div class="flex items-center gap-8">
             <div class="flex items-center gap-3">
-                <div class="flex size-10 items-center justify-center rounded-lg bg-white/10 text-white backdrop-blur-sm">
-                    <span class="material-symbols-outlined text-2xl">folder_managed</span>
-                </div>
+                <div class="size-10 rounded-lg bg-white flex items-center justify-center shrink-0 shadow-lg overflow-hidden">
+    <img src="<?= base_url('assets/img/logo.JPEG') ?>" 
+         alt="Logo Distrik Navigasi" 
+         class="h-8 w-auto object-contain">
+</div>
                 <div>
                     <h2 class="text-lg font-bold leading-tight text-white">SIAD</h2>
                     <p class="text-xs text-blue-200">Navigasi Tanjungpinang</p>
@@ -49,32 +51,87 @@
         </div>
         
         <div class="flex items-center gap-4">
-            <div class="hidden w-64 md:block">
-                <div class="relative flex items-center">
-                    <span class="material-symbols-outlined absolute left-3 text-[20px] text-blue-300">search</span>
-                    <input class="w-full rounded-lg border-none bg-blue-900/50 py-2 pl-10 pr-4 text-sm text-white placeholder-blue-300 focus:bg-blue-900 focus:ring-2 focus:ring-white/20" placeholder="Cari arsip..." type="text"/>
+            
+            
+            <div class="relative">
+                <?php 
+                    // Trik Pintar: Tarik 5 data notifikasi langsung dari View
+                    $db_notif = new \App\Models\ArsipModel();
+                    $aktivitas_notif = $db_notif->orderBy('updated_at', 'DESC')->findAll(5);
+                ?>
+                <button onclick="document.getElementById('dropdownNotif').classList.toggle('hidden')" class="relative flex size-9 items-center justify-center rounded-full text-blue-100 hover:bg-white/20 focus:bg-white/20 focus:outline-none transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">notifications</span>
+                    <?php if(!empty($aktivitas_notif)): ?>
+                        <span class="absolute right-1.5 top-1.5 size-2 rounded-full bg-red-500 ring-2 ring-nav-blue animate-pulse"></span>
+                    <?php endif; ?>
+                </button>
+                
+                <div id="dropdownNotif" class="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-xl border border-slate-200 hidden z-50 overflow-hidden">
+                    <div class="p-3 bg-slate-50 border-b border-slate-200 font-bold text-slate-700 text-sm flex justify-between items-center">
+                        <span>Notifikasi Terbaru</span>
+                        <button onclick="document.getElementById('dropdownNotif').classList.add('hidden')" class="text-slate-400 hover:text-red-500 p-1 rounded-md hover:bg-slate-200 transition-colors">
+                            <span class="material-symbols-outlined text-[16px] block">close</span>
+                        </button>
+                    </div>
+                    <div class="max-h-64 overflow-y-auto">
+                        <?php if(empty($aktivitas_notif)): ?>
+                            <div class="p-6 text-center text-sm text-slate-500 flex flex-col items-center">
+                                <span class="material-symbols-outlined text-4xl text-slate-300 mb-2">notifications_off</span>
+                                Belum ada notifikasi baru.
+                            </div>
+                        <?php else: ?>
+                            <?php foreach($aktivitas_notif as $notif): 
+                                $is_new = ($notif['created_at'] === $notif['updated_at']);
+                                $pesan = $is_new ? 'Arsip baru ditambahkan.' : 'Data arsip diperbarui.';
+                                $icon = $is_new ? 'add_circle' : 'edit_document';
+                                $color = $is_new ? 'text-green-500' : 'text-blue-500';
+                            ?>
+                            <a href="<?= base_url('staf/arsip/detail/' . $notif['id_arsip']) ?>" class="flex gap-3 p-4 border-b border-slate-100 hover:bg-blue-50 transition-colors">
+                                <span class="material-symbols-outlined <?= $color ?> text-[20px] mt-0.5"><?= $icon ?></span>
+                                <div>
+                                    <p class="text-sm font-bold text-slate-800 leading-tight"><?= esc($notif['nomor_surat']) ?></p>
+                                    <p class="text-xs text-slate-500 mt-1"><?= $pesan ?></p>
+                                    <p class="text-[10px] text-slate-400 mt-1"><?= date('d M Y, H:i', strtotime($notif['updated_at'])) ?></p>
+                                </div>
+                            </a>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </div>
+                    <div class="p-2 bg-slate-50 border-t border-slate-200 text-center">
+                        <a href="<?= base_url('staf/aktivitas') ?>" class="text-xs font-bold text-primary hover:underline">Lihat Semua Aktivitas</a>
+                    </div>
                 </div>
             </div>
-            
-            <button class="relative flex size-9 items-center justify-center rounded-full text-blue-100 hover:bg-white/10 hover:text-white">
-                <span class="material-symbols-outlined text-[20px]">notifications</span>
-                <span class="absolute right-1.5 top-1.5 size-2 rounded-full bg-red-500 ring-2 ring-nav-blue"></span>
-            </button>
-
             <div class="flex items-center gap-3 border-l border-blue-800 pl-4">
                 <div class="hidden text-right md:block">
-                    <p class="text-sm font-semibold text-white"><?= esc(session()->get('nama_lengkap') ?? 'User Staff') ?></p>
-                    <p class="text-xs text-blue-200"><?= esc(session()->get('divisi') ?? 'Staff') ?></p>
-                </div>
-                
-                <?php 
-                    $nama = session()->get('nama_lengkap') ?? 'Staf';
-                    $parts = explode(' ', $nama);
-                    $initials = strtoupper(substr($parts[0], 0, 1) . (isset($parts[1]) ? substr($parts[1], 0, 1) : ''));
-                ?>
-                <button class="relative flex size-10 items-center justify-center overflow-hidden rounded-full border-2 border-blue-400/30 bg-white text-primary font-bold ring-2 ring-white/10 transition-all hover:ring-white/30">
-                    <?= $initials ?>
-                </button>
+    <p class="text-sm font-semibold text-white leading-tight mb-1">
+        <?= esc(session()->get('nama_lengkap') ?? 'User Staff') ?>
+    </p>
+    
+    <div class="flex items-center justify-end gap-2">
+        <?php 
+            $nipPegawai = session()->get('nip');
+            if (!empty($nipPegawai)) : 
+        ?>
+            <span class="text-[10px] font-medium text-blue-200 tracking-wider">
+                NIP: <?= esc($nipPegawai) ?>
+            </span>
+        <?php endif; ?>
+        
+        <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-white/20 text-white uppercase tracking-wide border border-white/10">
+            <?= esc(session()->get('divisi') ?? 'Staff') ?>
+        </span>
+    </div>
+</div>
+
+<?php 
+    $nama = session()->get('nama_lengkap') ?? 'Staf';
+    $parts = explode(' ', $nama);
+    $initials = strtoupper(substr($parts[0], 0, 1) . (isset($parts[1]) ? substr($parts[1], 0, 1) : ''));
+?>
+<button class="relative flex size-10 ml-3 items-center justify-center overflow-hidden rounded-full border-2 border-blue-400/30 bg-white text-primary font-bold ring-2 ring-white/10 transition-all hover:ring-white/30">
+    <?= $initials ?>
+</button>
                 <a href="<?= base_url('login/logout') ?>" class="text-blue-200 hover:text-red-400 ml-2 transition-colors" title="Logout">
                     <span class="material-symbols-outlined">logout</span>
                 </a>
@@ -102,26 +159,31 @@
         </div>
 
         <div class="rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
-            <form method="GET" action="" class="border-b border-slate-100 p-4 dark:border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div class="flex items-center gap-2 w-full md:w-auto">
-                    <button type="submit" class="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
-                        <span class="material-symbols-outlined text-[18px]">filter_list</span> Terapkan
-                    </button>
-                    <div class="relative w-full md:w-auto">
-                        <select name="status" class="w-full md:w-48 appearance-none rounded-lg border border-slate-200 bg-white px-3 py-2 pr-8 text-sm font-medium text-slate-700 hover:bg-slate-50 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
-                            <option value="">Semua Status</option>
-                            <option value="Terkirim" <?= ($filter_status == 'Terkirim') ? 'selected' : '' ?>>Terkirim</option>
-                            <option value="Dalam Proses" <?= ($filter_status == 'Dalam Proses') ? 'selected' : '' ?>>Dalam Proses</option>
-                            <option value="Gagal" <?= ($filter_status == 'Gagal') ? 'selected' : '' ?>>Gagal</option>
-                        </select>
-                        <span class="material-symbols-outlined absolute right-2 top-2.5 pointer-events-none text-slate-500 text-[18px]">expand_more</span>
+            <form action="" method="GET" class="mb-8 rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <div class="grid grid-cols-1 gap-4 md:grid-cols-4 lg:grid-cols-6">
+                <div class="lg:col-span-2">
+                    <label class="mb-1.5 block text-xs font-semibold text-slate-500 dark:text-slate-400">Pencarian Kata Kunci</label>
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-3 top-2.5 text-slate-400">search</span>
+                        <input name="keyword" value="<?= esc($filter_keyword) ?>" class="w-full rounded-lg border-slate-300 bg-slate-50 py-2 pl-10 pr-4 text-sm focus:border-primary focus:ring-primary dark:border-slate-700 dark:bg-slate-800 dark:text-white" placeholder="No. Agenda, Perihal..." type="text"/>
                     </div>
                 </div>
-                <div class="relative w-full md:w-72">
-                    <span class="material-symbols-outlined absolute left-3 top-2.5 text-[18px] text-slate-400">search</span>
-                    <input name="keyword" value="<?= esc($filter_keyword) ?>" class="w-full rounded-lg border border-slate-200 bg-slate-50 py-2 pl-9 pr-4 text-sm text-slate-900 placeholder-slate-400 focus:border-primary focus:bg-white focus:outline-none focus:ring-1 focus:ring-primary dark:border-slate-700 dark:bg-slate-800/50 dark:text-white dark:placeholder-slate-500" placeholder="Cari nomor, perihal, atau tujuan..." type="text"/>
+                <div class="md:col-span-2 lg:col-span-1">
+                    <label class="mb-1.5 block text-xs font-semibold text-slate-500 dark:text-slate-400">Tanggal (Dari)</label>
+                    <input name="tgl_dari" value="<?= esc($filter_tgl_dari) ?>" class="w-full rounded-lg border-slate-300 bg-slate-50 py-2 px-3 text-sm focus:border-primary focus:ring-primary dark:border-slate-700 dark:bg-slate-800 dark:text-white" type="date"/>
                 </div>
-            </form>
+                <div class="md:col-span-2 lg:col-span-1">
+                    <label class="mb-1.5 block text-xs font-semibold text-slate-500 dark:text-slate-400">Tanggal (Sampai)</label>
+                    <input name="tgl_sampai" value="<?= esc($filter_tgl_sampai) ?>" class="w-full rounded-lg border-slate-300 bg-slate-50 py-2 px-3 text-sm focus:border-primary focus:ring-primary dark:border-slate-700 dark:bg-slate-800 dark:text-white" type="date"/>
+                </div>
+                
+                <div class="flex items-end md:col-span-2 lg:col-span-1">
+                    <button type="submit" class="w-full rounded-lg border border-slate-200 bg-white py-2 px-4 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 transition-colors">
+                        Terapkan Filter
+                    </button>
+                </div>
+            </div>
+        </form>
 
             <div class="overflow-x-auto">
                 <table class="w-full text-left text-sm">
@@ -132,7 +194,6 @@
                             <th class="px-6 py-4 font-semibold">Perihal</th>
                             <th class="px-6 py-4 font-semibold">Tgl. Surat</th>
                             <th class="px-6 py-4 font-semibold">Lokasi Fisik</th>
-                            <th class="px-6 py-4 font-semibold">Status</th>
                             <th class="px-6 py-4 text-right font-semibold">Aksi</th>
                         </tr>
                     </thead>
@@ -157,15 +218,7 @@
                                 $words = explode(' ', $tujuan);
                                 $inisialTujuan = strtoupper(substr($words[0], 0, 1) . (isset($words[1]) ? substr($words[1], 0, 1) : ''));
 
-                                // Tentukan Status dan Warnanya (Asumsi status di DB pakai kata yang sama)
-                                $status = $a['status'] ?? 'Dalam Proses';
-                                if(strtolower($status) == 'terkirim' || strtolower($status) == 'filed') {
-                                    $badge = 'bg-green-50 text-green-700 ring-green-600/20'; $textStatus = 'Terkirim';
-                                } elseif(strtolower($status) == 'gagal') {
-                                    $badge = 'bg-red-50 text-red-700 ring-red-600/20'; $textStatus = 'Gagal';
-                                } else {
-                                    $badge = 'bg-yellow-50 text-yellow-700 ring-yellow-600/20'; $textStatus = 'Dalam Proses';
-                                }
+                                
                             ?>
                             <tr class="group hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
                                 <td class="px-6 py-4">
@@ -191,20 +244,23 @@
                                 <td class="px-6 py-4 text-slate-600 dark:text-slate-400">
                                     <?= esc($a['nama_lemari'] ?? '-') ?> / <?= esc($a['nama_rak'] ?? '-') ?>
                                 </td>
-                                <td class="px-6 py-4">
-                                    <span class="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ring-1 ring-inset <?= $badge ?>">
-                                        <?= $textStatus ?>
-                                    </span>
-                                </td>
                                 <td class="px-6 py-4 text-right">
                                     <div class="flex justify-end gap-1">
-                                        <a href="<?= base_url('staf/arsip/detail/' . $a['id_arsip']) ?>" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Lihat Detail">
-    <span class="material-symbols-outlined text-xl">visibility</span>
-</a>
-                                        <a href="<?= base_url('staf/arsip/edit/' . $a['id_arsip']) ?>" class="rounded p-1 text-slate-400 hover:text-primary dark:hover:text-white transition-colors" title="Edit">
-                                            <span class="material-symbols-outlined text-[20px]">edit</span>
-                                        </a>
-                                    </div>
+    <a href="<?= base_url('staf/arsip/detail/' . $a['id_arsip']) ?>" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Lihat Detail">
+        <span class="material-symbols-outlined text-xl">visibility</span>
+    </a>
+    
+    <a href="<?= base_url('staf/arsip/edit/' . $a['id_arsip']) ?>" class="p-2 text-amber-500 hover:bg-amber-50 rounded-lg transition-colors" title="Edit">
+        <span class="material-symbols-outlined text-xl">edit</span>
+    </a>
+
+    <form action="<?= base_url('staf/arsip/delete/' . $a['id_arsip']) ?>" method="POST" class="inline-block" onsubmit="return confirm('Apakah Anda yakin ingin menghapus arsip ini secara permanen? Data dan file yang diunggah akan hilang.');">
+        <?= csrf_field() ?>
+        <button type="submit" class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors" title="Hapus Data">
+            <span class="material-symbols-outlined text-xl">delete</span>
+        </button>
+    </form>
+</div>
                                 </td>
                             </tr>
                             <?php endforeach; ?>
